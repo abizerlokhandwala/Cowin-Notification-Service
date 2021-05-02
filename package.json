@@ -1,0 +1,24 @@
+{
+  "name": "Cowin-Notification-Service",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abizerlokhandwala/Cowin-Notification-Service.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/abizerlokhandwala/Cowin-Notification-Service/issues"
+  },
+  "homepage": "https://github.com/abizerlokhandwala/Cowin-Notification-Service#readme",
+  "devDependencies": {
+    "serverless-python-requirements": "^5.1.1",
+    "serverless-wsgi": "^1.7.7"
+  }
+}

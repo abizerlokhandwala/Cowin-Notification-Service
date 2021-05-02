@@ -1,0 +1,58 @@
+service: cowin-notification-service
+app: cowin-notification-service
+org: reziba
+
+frameworkVersion: '2'
+
+provider:
+  name: aws
+  runtime: python3.8
+  timeout: 30
+  lambdaHashingVersion: 20201221
+  stage: dev
+  region: ap-south-1
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - s3:*
+            - cloudwatch:*
+            - dynamodb:*
+            - rds:*
+          Resource: '*'
+  environment:
+      DUMMY: 'abc'
+  apiGateway:
+    shouldStartNameWithService: true
+
+plugins:
+  - serverless-python-requirements
+
+package:
+  individually: true
+  exclude:
+    - venv/**
+    - node_modules/**
+
+functions:
+  get_states:
+    handler: handler.get_states
+    events:
+      - http:
+          path: /states
+          method: get
+
+  post_districts:
+    handler: handler.get_districts
+    events:
+      - http:
+          path: /districts
+          method: get
+
+  get_centers:
+    handler: handler.get_centers
+    events:
+      - http:
+          path: /centers
+          method: get
