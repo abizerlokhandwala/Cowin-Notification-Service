@@ -56,3 +56,17 @@ functions:
       - http:
           path: /centers
           method: get
+
+  get_district_preferences:
+    handler: handler.get_district_preferences
+    events:
+      - http:
+          path: /centers/preferences
+          method: get
+
+  subscribe:
+    handler: handler.subscribe
+    events:
+      - http:
+          path: /subscribe
+          method: post

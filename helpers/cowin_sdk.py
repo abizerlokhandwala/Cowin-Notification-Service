@@ -1,6 +1,6 @@
 import requests
 
-from utils.constants import STATES_URL, DISTRICTS_URL, CALENDAR_BY_DISTRICT_URL
+from helpers.constants import STATES_URL, DISTRICTS_URL, CALENDAR_BY_DISTRICT_URL
 
 
 class CowinAPI:
@@ -18,7 +18,7 @@ class CowinAPI:
         response = response.json()
         return response['districts']
 
-    def get_centers(self, district_id, date):
+    def get_centers_7(self, district_id, date):
         response = requests.get(f'{CALENDAR_BY_DISTRICT_URL}?district_id={district_id}&date={date}')
         response = response.json()
         return response['centers']
