@@ -4,6 +4,9 @@ org: reziba
 
 frameworkVersion: '2'
 
+custom:
+  secrets: ${file(secrets.${opt:stage, self:provider.stage}.yml)}
+
 provider:
   name: aws
   runtime: python3.8
@@ -19,15 +22,19 @@ provider:
             - s3:*
             - cloudwatch:*
             - dynamodb:*
-            - rds:*
           Resource: '*'
   environment:
-      DUMMY: 'abc'
+      DB_HOSTNAME: ${self:custom.secrets.DB_HOSTNAME}
+      DB_PASSWORD: ${self:custom.secrets.DB_PASSWORD}
+      DB_PORT: ${self:custom.secrets.DB_PORT}
+      DB_USER: ${self:custom.secrets.DB_USER}
+      DB_NAME: ${self:custom.secrets.DB_NAME}
   apiGateway:
     shouldStartNameWithService: true
 
 plugins:
   - serverless-python-requirements
+  - serverless-secrets-plugin
 
 package:
   individually: true

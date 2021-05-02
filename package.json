@@ -19,6 +19,7 @@
   "homepage": "https://github.com/abizerlokhandwala/Cowin-Notification-Service#readme",
   "devDependencies": {
     "serverless-python-requirements": "^5.1.1",
+    "serverless-secrets-plugin": "^0.1.0",
     "serverless-wsgi": "^1.7.7"
   }
 }

@@ -1,5 +1,6 @@
 import json
 
+from helpers.constants import ISSUE_MSG
 from helpers.cowin_sdk import CowinAPI
 from helpers.db_handler import DBHandler
 from helpers.email_handler import EmailHandler
@@ -32,11 +33,27 @@ def get_district_preferences(event, context):
 
 def subscribe(event, context):
     body = json.loads(event['body'])
+    # body = {
+    #     "email":"abizerl123@gmail.com",
+    #     "phone_number": "123",
+    #     "subscriptions": [{"vaccine":"abcd","age_group": "abcd","district_id":"123"}, {"vaccine":"abc","age_group": "abcd","district_id":"123"}]
+    # }
     db = DBHandler.get_instance()
     email = EmailHandler.get_instance()
-    is_verified = db.subscribe(body)
+    is_verified, verification_token = db.subscribe(body)
+    if is_verified == -1:
+        return response_handler({'message': f'Email Already exists'}, 400)
     additional_comments = ''
-    if is_verified is False:
-        email.sendVerificationEmail(body['email'])
-        additional_comments = f'Please verify your email ID: {body["email"]}'
+    # if is_verified is False:
+    #     email.sendVerificationEmail(body['email'])
+    #     additional_comments = f'Please verify your email ID: {body["email"]}'
     return response_handler({'message': f'Subscribed successfully! {additional_comments}'}, 201)
+
+def unsubscribe(event, context):
+    sub_id = event["queryStringParameters"]["subscription_id"]
+    user_email = event["queryStringParameters"]["email"]
+    db = DBHandler.get_instance()
+    if db.unsubscribe(sub_id, user_email):
+        return response_handler({'message': f'Unsubscribed successfully!'}, 200)
+    else:
+        return response_handler({'message': ISSUE_MSG}, status=400)
