@@ -77,3 +77,10 @@ functions:
       - http:
           path: /subscribe
           method: post
+
+  unsubscribe:
+    handler: handler.unsubscribe
+    events:
+      - http:
+          path: /unsubscribe
+          method: post
