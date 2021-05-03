@@ -1,11 +1,13 @@
 import json
+import os
 
 from helpers.constants import ISSUE_MSG
 from helpers.cowin_sdk import CowinAPI
 from helpers.db_handler import DBHandler
+from helpers.decorators import validate_args
 from helpers.email_handler import EmailHandler
-from helpers.utils import response_handler, get_preference_slots
-
+from helpers.utils import response_handler, get_preference_slots, get_historical_diff, sqs
+from datetime import date
 
 def get_states(event, context):
     cowin = CowinAPI()
@@ -21,8 +23,8 @@ def get_districts(event, context):
 def get_centers(event, context):
     cowin = CowinAPI()
     district_id = event["queryStringParameters"]["district_id"]
-    date = event["queryStringParameters"]["date"]
-    centers = cowin.get_centers_7(district_id, date)
+    date_today = date.today().strftime("%d-%m-%Y")
+    centers = cowin.get_centers_7(district_id, date_today)
     return response_handler(centers, 200)
 
 def get_district_preferences(event, context):
@@ -33,11 +35,6 @@ def get_district_preferences(event, context):
 
 def subscribe(event, context):
     body = json.loads(event['body'])
-    # body = {
-    #     "email":"abizerl123@gmail.com",
-    #     "phone_number": "123",
-    #     "subscriptions": [{"vaccine":"abcd","age_group": "abcd","district_id":"123"}, {"vaccine":"abc","age_group": "abcd","district_id":"123"}]
-    # }
     db = DBHandler.get_instance()
     email = EmailHandler.get_instance()
     is_verified, verification_token = db.subscribe(body)
@@ -57,3 +54,19 @@ def unsubscribe(event, context):
         return response_handler({'message': f'Unsubscribed successfully!'}, 200)
     else:
         return response_handler({'message': ISSUE_MSG}, status=400)
+
+def trigger_district_updates(event, context):
+    db = DBHandler.get_instance()
+    districts = db.candidate_districts()
+    for district in districts:
+        sqs.send_message(MessageBody=district, QueueUrl=os.getenv('DISTRICT_QUEUE_URL'))
+    return response_handler({},200)
+
+def update_district_slots(event, context):
+    processed_districts = ''
+    for record in event['Records']:
+        district_id = record['body']
+        get_historical_diff(district_id)
+        processed_districts+=district_id+' '
+        sqs.delete_message(ReceiptHandle=record['receiptHandle'], QueueUrl=os.getenv('NOTIF_QUEUE_URL'))
+    return response_handler({'message': f'Districts {processed_districts} processed'},200)

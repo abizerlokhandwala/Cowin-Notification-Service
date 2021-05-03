@@ -21,7 +21,7 @@ provider:
           Action:
             - s3:*
             - cloudwatch:*
-            - dynamodb:*
+            - sqs:*
           Resource: '*'
   environment:
       DB_HOSTNAME: ${self:custom.secrets.DB_HOSTNAME}
@@ -29,6 +29,8 @@ provider:
       DB_PORT: ${self:custom.secrets.DB_PORT}
       DB_USER: ${self:custom.secrets.DB_USER}
       DB_NAME: ${self:custom.secrets.DB_NAME}
+      DISTRICT_QUEUE_URL: !Ref DistrictQueue
+      NOTIF_QUEUE_URL: !Ref NotificationQueue
   apiGateway:
     shouldStartNameWithService: true
 
@@ -50,7 +52,7 @@ functions:
           path: /states
           method: get
 
-  post_districts:
+  get_districts:
     handler: handler.get_districts
     events:
       - http:
@@ -77,6 +79,7 @@ functions:
       - http:
           path: /subscribe
           method: post
+          cors: true
 
   unsubscribe:
     handler: handler.unsubscribe
@@ -84,3 +87,30 @@ functions:
       - http:
           path: /unsubscribe
           method: post
+          cors: true
+
+  trigger_district_updates:
+    handler: handler.trigger_district_updates
+    events:
+      - http:
+          path: /trigger_update
+          method: post
+          cors: true
+
+  update_district_slots:
+    handler: handler.update_district_slots
+    reservedConcurrency: 20
+    events:
+      - sqs:
+          arn: !GetAtt DistrictQueue.Arn
+
+resources:
+  Resources:
+    DistrictQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        VisibilityTimeout: 120
+    NotificationQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        VisibilityTimeout: 120

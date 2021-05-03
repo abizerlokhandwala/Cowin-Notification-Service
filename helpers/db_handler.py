@@ -4,8 +4,9 @@ import uuid
 
 import pymysql
 
-from helpers.constants import GET_USER_QUERY, ADD_USER_QUERY, SUBSCRIPTION_EXISTS, ADD_SUBSCRIPTION, \
-    ADD_USER_SUBSCRIPTION, UNSUBSCRIBE_USER_SUBSCRIPTION
+from helpers.queries import GET_USER_QUERY, ADD_USER_QUERY, SUBSCRIPTION_EXISTS, ADD_SUBSCRIPTION, \
+    ADD_USER_SUBSCRIPTION, UNSUBSCRIBE_USER_SUBSCRIPTION, GET_CANDIDATE_DISTRICTS,  \
+    GET_HISTORICAL_DATA
 
 
 class DBHandler:
@@ -75,3 +76,49 @@ class DBHandler:
             logging.error(e, exc_info=True)
             return False
         return True
+
+    def candidate_districts(self):
+        try:
+            cursor = self.connection.cursor()
+            cursor.execute(GET_CANDIDATE_DISTRICTS)
+            rows = cursor.fetchall()
+            district_id_list = [ele[0] for ele in rows]
+            cursor.close()
+            return district_id_list
+        except Exception as e:
+            logging.error(e, exc_info=True)
+        return
+
+    def district_subscriptions(self):
+        try:
+            cursor = self.connection.cursor()
+            cursor.execute(GET_CANDIDATE_DISTRICTS)
+            rows = cursor.fetchall()
+            district_id_list = [ele[0] for ele in rows]
+            cursor.close()
+            return district_id_list
+        except Exception as e:
+            logging.error(e, exc_info=True)
+        return
+
+    def get_historical_data(self, district_id, date_from):
+        try:
+            cursor = self.connection.cursor()
+            cursor.execute(GET_HISTORICAL_DATA,(district_id,date_from))
+            rows = cursor.fetchall()
+            cursor.close()
+            return rows
+        except Exception as e:
+            logging.error(e, exc_info=True)
+        return
+
+    def insert(self, query, params):
+        try:
+            cursor = self.connection.cursor()
+            cursor.execute(query, params)
+            self.connection.commit()
+            cursor.close()
+            return True
+        except Exception as e:
+            logging.error(e, exc_info=True)
+        return False

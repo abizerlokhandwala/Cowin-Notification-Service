@@ -1,10 +1,16 @@
 import json
+import os
 
 from datetime import date, timedelta
 
-from helpers.constants import BOTH, COVAXIN, COVISHIELD, ABOVE_18, ABOVE_45, ABOVE_18_COWIN, ABOVE_45_COWIN
-from helpers.cowin_sdk import CowinAPI
+import boto3
 
+from helpers.constants import BOTH, COVAXIN, COVISHIELD, ABOVE_18, ABOVE_45, ABOVE_18_COWIN, ABOVE_45_COWIN, NUM_WEEKS
+from helpers.cowin_sdk import CowinAPI
+from helpers.db_handler import DBHandler
+from helpers.queries import ADD_DISTRICT_PROCESSED
+
+sqs = boto3.client('sqs', region_name='ap-south-1')
 
 def response_handler(body, status):
     return {
@@ -39,7 +45,7 @@ def pattern_match(user_vaccine, user_age_group, vaccine, age_group):
 
 def get_preference_slots(district_id, vaccine, age_group):
     cowin = CowinAPI()
-    weeks = 2
+    weeks = NUM_WEEKS
     centers = {}
     for week in range(0,weeks):
         itr_date = (date.today() + timedelta(weeks=week)).strftime("%d-%m-%Y")
@@ -54,6 +60,52 @@ def get_preference_slots(district_id, vaccine, age_group):
                         'capacity': session['available_capacity'],
                         'age_limit': session['min_age_limit'],
                         'vaccine': 'covaxin' if session['vaccine'] == '' else session['vaccine'],
-                        'slots': session['slots']
+                        'slots': session['slots'],
+                        'pincode': center['pincode'],
+                        'from': center['from'],
+                        'to': center['to'],
+                        'fee': center['fee_type']
                     })
     return centers
+
+def get_historical_ds(district_id, center_id, date, age_group, vaccine):
+    return str(district_id), str(center_id), str(date), str(age_group), str(vaccine)
+
+def get_vaccine(vaccine):
+    if vaccine == '':
+        return COVAXIN
+    else:
+        return vaccine.lower()
+
+def get_historical_diff(district_id):
+    cowin = CowinAPI()
+    db = DBHandler.get_instance()
+    weeks = NUM_WEEKS
+    db_data = db.get_historical_data(district_id, date.today().strftime("%d-%m-%Y"))
+    for week in range(0,weeks):
+        itr_date = (date.today() + timedelta(weeks=week)).strftime("%d-%m-%Y")
+        response = cowin.get_centers_7(district_id, itr_date)
+        for center in response:
+            for session in center['sessions']:
+                if session['available_capacity'] > 0:
+                    if get_historical_ds(district_id, center['center_id'], session['date'], session['min_age_limit']
+                                          ,get_vaccine(session['vaccine'])) in db_data:
+                        continue
+                    db.insert(ADD_DISTRICT_PROCESSED, (district_id, center['center_id'], session['date'], session['min_age_limit']
+                                          ,get_vaccine(session['vaccine'])))
+                    message = {
+                        'district_id': district_id,
+                        'center_name':  center['name'],
+                        'address': center['address'],
+                        'district_name': center['district_name'],
+                        'pincode': center['pincode'],
+                        'from': center['from'],
+                        'to': center['to'],
+                        'fee_type': center['fee_type'],
+                        'date': session['date'],
+                        'age_group': session['min_age_limit'],
+                        'vaccine': get_vaccine(session['vaccine']),
+                        'slots': session['slots']
+                    }
+                    sqs.send_message(MessageBody=json.dumps(message), QueueUrl=os.getenv('NOTIF_QUEUE_URL'))
+    return
