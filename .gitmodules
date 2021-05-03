@@ -1,3 +1,3 @@
 [submodule "Cowin-Notification-System"]
-	path = Cowin-Notification-System
+	path = frontend/Cowin-Notification-System
 	url = https://github.com/Guzzler/Cowin-Notification-System.git

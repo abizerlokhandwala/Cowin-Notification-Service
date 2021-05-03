@@ -1,0 +1,31 @@
+.center {
+  text-align: center !important;
+}
+
+.strong {
+  font-weight: bold !important;
+}
+
+.display-block {
+  display: block !important;
+}
+
+.height-100 {
+  height: 100% !important;
+}
+
+.height-min-100 {
+  min-height: 100% !important;
+}
+
+.width-100 {
+  width: 100% !important;
+}
+
+.width-min-100 {
+  min-width: 100% !important;
+}
+
+.overflow-auto {
+  overflow: auto !important;
+}
