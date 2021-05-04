@@ -14,7 +14,31 @@ ABOVE_18_COWIN = '18'
 ABOVE_45_COWIN = '45'
 
 DB_NAME = os.getenv('DB_NAME')
-# DB_NAME = 'cowin_data'
+
 ISSUE_MSG = 'There was an issue with your request, please contact the developers'
 
-NUM_WEEKS = 2
+NUM_WEEKS = 1
+
+EMAIL_SUBJECT = '% vaccine slots available at %s!'
+
+EMAIL_BODY = """<html>
+    <body>
+      <p>New vaccine slot available!<br>
+        %s in %s on %s
+      </p>
+      <p>
+      Age group: %s
+      Vaccine: %s
+      </p>
+      <p>
+      Complete Address: %s<br>
+      Pincode %s
+      </p>
+      <p>
+      Cost: %s
+      </p>
+      <p>
+      Slots: %s
+      </p>
+    </body>
+    </html>"""

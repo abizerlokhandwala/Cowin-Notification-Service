@@ -31,6 +31,7 @@ provider:
       DB_NAME: ${self:custom.secrets.DB_NAME}
       DISTRICT_QUEUE_URL: !Ref DistrictQueue
       NOTIF_QUEUE_URL: !Ref NotificationQueue
+      SENDER_EMAIL: ${self:custom.secrets.SENDER_EMAIL}
   apiGateway:
     shouldStartNameWithService: true
 
@@ -43,6 +44,7 @@ package:
   exclude:
     - venv/**
     - node_modules/**
+    - frontend/**
 
 functions:
   get_states:
@@ -92,17 +94,23 @@ functions:
   trigger_district_updates:
     handler: handler.trigger_district_updates
     events:
-      - http:
-          path: /trigger_update
-          method: post
-          cors: true
+      - schedule: rate(1 hour)
 
   update_district_slots:
     handler: handler.update_district_slots
-    reservedConcurrency: 20
+    reservedConcurrency: 50
     events:
       - sqs:
           arn: !GetAtt DistrictQueue.Arn
+          batchSize: 10
+
+  notif_dispatcher:
+    handler: handler.notif_dispatcher
+    reservedConcurrency: 50
+    events:
+      - sqs:
+          arn: !GetAtt NotificationQueue.Arn
+          batchSize: 5
 
 resources:
   Resources:

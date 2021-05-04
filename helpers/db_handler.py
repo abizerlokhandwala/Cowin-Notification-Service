@@ -5,8 +5,8 @@ import uuid
 import pymysql
 
 from helpers.queries import GET_USER_QUERY, ADD_USER_QUERY, SUBSCRIPTION_EXISTS, ADD_SUBSCRIPTION, \
-    ADD_USER_SUBSCRIPTION, UNSUBSCRIBE_USER_SUBSCRIPTION, GET_CANDIDATE_DISTRICTS,  \
-    GET_HISTORICAL_DATA
+    ADD_USER_SUBSCRIPTION, UNSUBSCRIBE_USER_SUBSCRIPTION, GET_CANDIDATE_DISTRICTS, \
+    GET_HISTORICAL_DATA, GET_PROCESSED_DISTRICTS
 
 
 class DBHandler:
@@ -66,10 +66,10 @@ class DBHandler:
         cursor.close()
         return verified, verification_token
 
-    def unsubscribe(self, sub_id, email):
+    def unsubscribe(self, email):
         try:
             cursor = self.connection.cursor()
-            cursor.execute(UNSUBSCRIBE_USER_SUBSCRIPTION, (email, sub_id))
+            cursor.execute(UNSUBSCRIBE_USER_SUBSCRIPTION, (email,))
             self.connection.commit()
             cursor.close()
         except Exception as e:
@@ -122,3 +122,19 @@ class DBHandler:
         except Exception as e:
             logging.error(e, exc_info=True)
         return False
+
+    def is_district_processed(self, district_id):
+        cursor = self.connection.cursor()
+        cursor.execute(GET_PROCESSED_DISTRICTS, (district_id,))
+        row = cursor.fetchone()
+        cursor.close()
+        if row:
+            return True
+        return False
+
+    def query(self, query, params):
+        cursor = self.connection.cursor()
+        cursor.execute(query, params)
+        rows = cursor.fetchall()
+        cursor.close()
+        return rows

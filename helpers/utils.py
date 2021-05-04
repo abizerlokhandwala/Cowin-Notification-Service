@@ -8,7 +8,7 @@ import boto3
 from helpers.constants import BOTH, COVAXIN, COVISHIELD, ABOVE_18, ABOVE_45, ABOVE_18_COWIN, ABOVE_45_COWIN, NUM_WEEKS
 from helpers.cowin_sdk import CowinAPI
 from helpers.db_handler import DBHandler
-from helpers.queries import ADD_DISTRICT_PROCESSED
+from helpers.queries import ADD_DISTRICT_PROCESSED, ADD_PROCESSED_DISTRICTS
 
 sqs = boto3.client('sqs', region_name='ap-south-1')
 
@@ -77,11 +77,12 @@ def get_vaccine(vaccine):
     else:
         return vaccine.lower()
 
-def get_historical_diff(district_id):
+def send_historical_diff(district_id):
     cowin = CowinAPI()
     db = DBHandler.get_instance()
     weeks = NUM_WEEKS
     db_data = db.get_historical_data(district_id, date.today().strftime("%d-%m-%Y"))
+    is_district_processed = db.is_district_processed(district_id)
     for week in range(0,weeks):
         itr_date = (date.today() + timedelta(weeks=week)).strftime("%d-%m-%Y")
         response = cowin.get_centers_7(district_id, itr_date)
@@ -93,19 +94,24 @@ def get_historical_diff(district_id):
                         continue
                     db.insert(ADD_DISTRICT_PROCESSED, (district_id, center['center_id'], session['date'], session['min_age_limit']
                                           ,get_vaccine(session['vaccine'])))
-                    message = {
-                        'district_id': district_id,
-                        'center_name':  center['name'],
-                        'address': center['address'],
-                        'district_name': center['district_name'],
-                        'pincode': center['pincode'],
-                        'from': center['from'],
-                        'to': center['to'],
-                        'fee_type': center['fee_type'],
-                        'date': session['date'],
-                        'age_group': session['min_age_limit'],
-                        'vaccine': get_vaccine(session['vaccine']),
-                        'slots': session['slots']
-                    }
-                    sqs.send_message(MessageBody=json.dumps(message), QueueUrl=os.getenv('NOTIF_QUEUE_URL'))
+                    if is_district_processed:
+                        message = {
+                            'district_id': district_id,
+                            'center_id': center['center_id'],
+                            'center_name':  center['name'],
+                            'address': center['address'],
+                            'district_name': center['district_name'],
+                            'pincode': center['pincode'],
+                            'from': center['from'],
+                            'to': center['to'],
+                            'fee_type': center['fee_type'],
+                            'date': session['date'],
+                            'age_group': f'above_{session["min_age_limit"]}',
+                            'vaccine': get_vaccine(session['vaccine']),
+                            'slots': session['slots'],
+                            'capacity': session['available_capacity']
+                        }
+                        sqs.send_message(MessageBody=json.dumps(message), QueueUrl=os.getenv('NOTIF_QUEUE_URL'))
+    if not is_district_processed:
+        db.insert(ADD_PROCESSED_DISTRICTS,(district_id,))
     return
