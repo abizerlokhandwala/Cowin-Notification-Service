@@ -36,5 +36,5 @@ class NotifHandler:
         db.insert(ADD_USER_TOKEN,(token, user_email))
         body = (VERIFY_EMAIL_BODY % user_email, token)
         subject = VERIFY_SUBJECT
-        ses.send_email(os.getenv('SENDER_EMAIL'), user_email, subject, body)
+        ses.send_email(os.getenv('SENDER_EMAIL'), [user_email], subject, body)
         return
