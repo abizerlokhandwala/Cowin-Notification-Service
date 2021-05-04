@@ -32,6 +32,7 @@ provider:
       DISTRICT_QUEUE_URL: !Ref DistrictQueue
       NOTIF_QUEUE_URL: !Ref NotificationQueue
       SENDER_EMAIL: ${self:custom.secrets.SENDER_EMAIL}
+      WEBSITE_URL: ${self:custom.secrets.WEBSITE_URL}
   apiGateway:
     shouldStartNameWithService: true
 
@@ -94,7 +95,7 @@ functions:
   trigger_district_updates:
     handler: handler.trigger_district_updates
     events:
-      - schedule: rate(1 hour)
+      - schedule: rate(5 minutes)
 
   update_district_slots:
     handler: handler.update_district_slots
@@ -107,10 +108,18 @@ functions:
   notif_dispatcher:
     handler: handler.notif_dispatcher
     reservedConcurrency: 50
+#    events:
+#      - sqs:
+#          arn: !GetAtt NotificationQueue.Arn
+#          batchSize: 5
+
+  verify_email:
+    handler: handler.verify_email
     events:
-      - sqs:
-          arn: !GetAtt NotificationQueue.Arn
-          batchSize: 5
+      - http:
+          path: /verify_email
+          method: post
+          cors: true
 
 resources:
   Resources:

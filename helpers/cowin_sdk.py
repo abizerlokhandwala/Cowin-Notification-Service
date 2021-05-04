@@ -1,3 +1,5 @@
+import logging
+
 import requests
 
 from helpers.constants import STATES_URL, DISTRICTS_URL, CALENDAR_BY_DISTRICT_URL
@@ -10,6 +12,7 @@ class CowinAPI:
 
     def get_states(self):
         response = requests.get(STATES_URL)
+        logging.info(str(response))
         response = response.json()
         return response['states']
 

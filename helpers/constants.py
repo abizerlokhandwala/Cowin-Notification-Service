@@ -12,7 +12,7 @@ ABOVE_18 = 'above_18'
 ABOVE_45 = 'above_45'
 ABOVE_18_COWIN = '18'
 ABOVE_45_COWIN = '45'
-
+WEBSITE_URL = os.getenv('WEBSITE_URL')
 DB_NAME = os.getenv('DB_NAME')
 
 ISSUE_MSG = 'There was an issue with your request, please contact the developers'
@@ -39,6 +39,15 @@ EMAIL_BODY = """<html>
       </p>
       <p>
       Slots: %s
+      </p>
+    </body>
+    </html>"""
+
+VERIFY_SUBJECT = 'Please verify your email'
+
+VERIFY_EMAIL_BODY = f"""<html>
+    <body>
+      <p>Please verify your email here: {WEBSITE_URL}/verify_email?email=%s&token=%s
       </p>
     </body>
     </html>"""

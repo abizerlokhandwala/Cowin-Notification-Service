@@ -6,9 +6,8 @@ from helpers.constants import ISSUE_MSG
 from helpers.cowin_sdk import CowinAPI
 from helpers.db_handler import DBHandler
 from helpers.decorators import validate_args
-from helpers.email_handler import EmailHandler
 from helpers.notificationHandler import NotifHandler
-from helpers.queries import USER_PATTERN_MATCH
+from helpers.queries import USER_PATTERN_MATCH, GET_USER_QUERY, UPDATE_USER_VERIFIED
 from helpers.utils import response_handler, get_preference_slots, sqs, send_historical_diff
 from datetime import date
 
@@ -39,14 +38,14 @@ def get_district_preferences(event, context):
 def subscribe(event, context):
     body = json.loads(event['body'])
     db = DBHandler.get_instance()
-    email = EmailHandler.get_instance()
+    notif = NotifHandler()
     is_verified, verification_token = db.subscribe(body)
     if is_verified == -1:
         return response_handler({'message': f'Email Already exists'}, 400)
     additional_comments = ''
-    # if is_verified is False:
-    #     email.sendVerificationEmail(body['email'])
-    #     additional_comments = f'Please verify your email ID: {body["email"]}'
+    if is_verified is False:
+        notif.send_verification_email(body['email'])
+        additional_comments = f'Please verify your email ID: {body["email"]}'
     return response_handler({'message': f'Subscribed successfully! {additional_comments}'}, 201)
 
 def unsubscribe(event, context):
@@ -56,6 +55,16 @@ def unsubscribe(event, context):
         return response_handler({'message': f'Unsubscribed successfully!'}, 200)
     else:
         return response_handler({'message': ISSUE_MSG}, status=400)
+
+def verify_email(event, context):
+    user_email = event["queryStringParameters"]["email"]
+    token = event["queryStringParameters"]["token"]
+    db = DBHandler.get_instance()
+    user = db.query(GET_USER_QUERY, (user_email,))
+    if user and user[0][2] == token:
+        db.insert(UPDATE_USER_VERIFIED, (user_email,))
+        return response_handler({'message': 'Successful Verification'}, status=200)
+    return response_handler({'message': 'Unsuccessful Verification'}, status=403)
 
 def trigger_district_updates(event, context):
     db = DBHandler.get_instance()
@@ -76,13 +85,11 @@ def update_district_slots(event, context):
     return response_handler({'message': f'Districts {processed_districts} processed'},200)
 
 def notif_dispatcher(event, context):
-    count = 0
     notif = NotifHandler()
     db = DBHandler.get_instance()
     for record in event['Records']:
         message = json.loads(record['body'])
         user_emails = [row[0] for row in db.query(USER_PATTERN_MATCH,('email',message['district_id'],message['age_group'],message['vaccine']))]
         notif.send_emails(user_emails, message)
-        count+=1
         sqs.delete_message(ReceiptHandle=record['receiptHandle'], QueueUrl=os.getenv('NOTIF_QUEUE_URL'))
-    return response_handler({'message': f'{count} notifs processed'},200)
+    return response_handler({'message': f'All notifs processed'},200)

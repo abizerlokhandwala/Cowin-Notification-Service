@@ -37,7 +37,7 @@ class DBHandler:
         verification_token = None
         if not row:
             verified = False
-            verification_token = uuid.uuid4()
+            verification_token = str(uuid.uuid4())
             try:
                 cursor.execute(ADD_USER_QUERY, (email, verification_token, 0, phone_number))
                 user_id = self.connection.insert_id()

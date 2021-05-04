@@ -1,6 +1,9 @@
 import os
+import uuid
 
-from helpers.constants import EMAIL_SUBJECT, EMAIL_BODY
+from helpers.constants import EMAIL_SUBJECT, EMAIL_BODY, VERIFY_EMAIL_BODY, VERIFY_SUBJECT
+from helpers.db_handler import DBHandler
+from helpers.queries import ADD_USER_TOKEN
 from helpers.ses_handler import SESHandler
 
 
@@ -24,4 +27,14 @@ class NotifHandler:
                 email_chunk = [email]
         if email_chunk:
             ses.send_email(os.getenv('SENDER_EMAIL'), email_chunk, email_subject, email_body)
+        return
+
+    def send_verification_email(self, user_email):
+        ses = SESHandler.get_instance()
+        token = str(uuid.uuid4())
+        db = DBHandler.get_instance()
+        db.insert(ADD_USER_TOKEN,(token, user_email))
+        body = (VERIFY_EMAIL_BODY % user_email, token)
+        subject = VERIFY_SUBJECT
+        ses.send_email(os.getenv('SENDER_EMAIL'), user_email, subject, body)
         return
