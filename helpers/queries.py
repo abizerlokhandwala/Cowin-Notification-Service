@@ -29,6 +29,6 @@ GET_HISTORICAL_DATA = (f'SELECT district_id, center_id, date, age_group, LOWER(v
 USER_PATTERN_MATCH = (f'SELECT distinct email from {DB_NAME}.users where is_verified = 1 and id in '
                       f'(SELECT user_id from {DB_NAME}.user_subscriptions where is_subscribed = 1 and type = %s '
                       f'and subscription_id in (SELECT id from {DB_NAME}.subscriptions where '
-                      'district_id = %s and age_group = %s and vaccine = %s))')
+                      'district_id = %s and age_group in (%s, "both") and vaccine in (%s, "both") ))')
 ADD_USER_TOKEN = f'UPDATE {DB_NAME}.users SET email_verification_token = %s where email = %s'
 UPDATE_USER_VERIFIED = f'UPDATE {DB_NAME}.users SET is_verified = 1 where email = %s'

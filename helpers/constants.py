@@ -19,7 +19,7 @@ ISSUE_MSG = 'There was an issue with your request, please contact the developers
 
 NUM_WEEKS = 1
 
-EMAIL_SUBJECT = '% vaccine slots available at %s!'
+EMAIL_SUBJECT = '%s vaccine slots available at %s!'
 
 EMAIL_BODY = """<html>
     <body>

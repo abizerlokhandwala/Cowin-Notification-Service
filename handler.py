@@ -92,6 +92,7 @@ def notif_dispatcher(event, context):
     for record in event['Records']:
         message = json.loads(record['body'])
         user_emails = [row[0] for row in db.query(USER_PATTERN_MATCH,('email',message['district_id'],message['age_group'],message['vaccine']))]
+        logging.info(f'Users to send emails to: {user_emails}')
         notif.send_emails(user_emails, message)
         sqs.delete_message(ReceiptHandle=record['receiptHandle'], QueueUrl=os.getenv('NOTIF_QUEUE_URL'))
     return response_handler({'message': f'All notifs processed'},200)

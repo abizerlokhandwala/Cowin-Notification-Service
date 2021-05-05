@@ -1,3 +1,4 @@
+import logging
 import os
 import uuid
 
@@ -27,6 +28,7 @@ class NotifHandler:
                 email_chunk = [email]
         if email_chunk:
             ses.send_email(os.getenv('SENDER_EMAIL'), email_chunk, email_subject, email_body)
+        logging.info('Emails Sent')
         return
 
     def send_verification_email(self, user_email):

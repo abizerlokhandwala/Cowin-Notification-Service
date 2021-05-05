@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 
 from datetime import date, timedelta
@@ -54,7 +55,7 @@ def get_preference_slots(district_id, vaccine, age_group):
             for session in center['sessions']:
                 if session['available_capacity']>0 and pattern_match(vaccine, age_group, session['vaccine'], session['min_age_limit']):
                     centers.append({
-                        'center_name': center['center_name'],
+                        'center_name': center['name'],
                         'date': session['date'],
                         'capacity': session['available_capacity'],
                         'age_limit': session['min_age_limit'],
@@ -110,6 +111,7 @@ def send_historical_diff(district_id):
                             'slots': session['slots'],
                             'capacity': session['available_capacity']
                         }
+                        logging.info(f'{message} sent to notif queue')
                         sqs.send_message(MessageBody=json.dumps(message), QueueUrl=os.getenv('NOTIF_QUEUE_URL'))
     if not is_district_processed:
         db.insert(ADD_PROCESSED_DISTRICTS,(district_id,))
