@@ -61,6 +61,8 @@ def verify_email(event, context):
     token = event["queryStringParameters"]["token"]
     db = DBHandler.get_instance()
     user = db.query(GET_USER_QUERY, (user_email,))
+    if user and int(user[0][3]) == 1:
+        return response_handler({'message': 'User already verified'}, status=200)
     if user and user[0][2] == token:
         db.insert(UPDATE_USER_VERIFIED, (user_email,))
         return response_handler({'message': 'Successful Verification'}, status=200)

@@ -46,16 +46,15 @@ def pattern_match(user_vaccine, user_age_group, vaccine, age_group):
 def get_preference_slots(district_id, vaccine, age_group):
     cowin = CowinAPI()
     weeks = NUM_WEEKS
-    centers = {}
+    centers = []
     for week in range(0,weeks):
         itr_date = (date.today() + timedelta(weeks=week)).strftime("%d-%m-%Y")
         response = cowin.get_centers_7(district_id, itr_date)
         for center in response:
             for session in center['sessions']:
                 if session['available_capacity']>0 and pattern_match(vaccine, age_group, session['vaccine'], session['min_age_limit']):
-                    if center['name'] not in centers:
-                        centers[center['name']] = []
-                    centers[center['name']].append({
+                    centers.append({
+                        'center_name': center['center_name'],
                         'date': session['date'],
                         'capacity': session['available_capacity'],
                         'age_limit': session['min_age_limit'],

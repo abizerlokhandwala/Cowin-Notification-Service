@@ -22,6 +22,7 @@ provider:
             - s3:*
             - cloudwatch:*
             - sqs:*
+            - ses:*
           Resource: '*'
   environment:
       DB_HOSTNAME: ${self:custom.secrets.DB_HOSTNAME}
@@ -108,10 +109,10 @@ functions:
   notif_dispatcher:
     handler: handler.notif_dispatcher
     reservedConcurrency: 50
-#    events:
-#      - sqs:
-#          arn: !GetAtt NotificationQueue.Arn
-#          batchSize: 5
+    events:
+      - sqs:
+          arn: !GetAtt NotificationQueue.Arn
+          batchSize: 5
 
   verify_email:
     handler: handler.verify_email

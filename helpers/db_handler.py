@@ -46,6 +46,9 @@ class DBHandler:
                 cursor.close()
                 return -1
         else:
+            if int(row[3]) == 0:
+                verified = False
+                verification_token = row[2]
             user_id = row[0]
 
         subscription_ids = []
