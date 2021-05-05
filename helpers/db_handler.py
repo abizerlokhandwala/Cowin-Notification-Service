@@ -8,6 +8,8 @@ from helpers.queries import GET_USER_QUERY, ADD_USER_QUERY, SUBSCRIPTION_EXISTS,
     ADD_USER_SUBSCRIPTION, UNSUBSCRIBE_USER_SUBSCRIPTION, GET_CANDIDATE_DISTRICTS, \
     GET_HISTORICAL_DATA, GET_PROCESSED_DISTRICTS
 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 class DBHandler:
 
@@ -76,7 +78,7 @@ class DBHandler:
             self.connection.commit()
             cursor.close()
         except Exception as e:
-            logging.error(e, exc_info=True)
+            logger.error(e, exc_info=True)
             return False
         return True
 
@@ -89,7 +91,7 @@ class DBHandler:
             cursor.close()
             return district_id_list
         except Exception as e:
-            logging.error(e, exc_info=True)
+            logger.error(e, exc_info=True)
         return
 
     def district_subscriptions(self):
@@ -101,7 +103,7 @@ class DBHandler:
             cursor.close()
             return district_id_list
         except Exception as e:
-            logging.error(e, exc_info=True)
+            logger.error(e, exc_info=True)
         return
 
     def get_historical_data(self, district_id, date_from):
@@ -112,7 +114,7 @@ class DBHandler:
             cursor.close()
             return rows
         except Exception as e:
-            logging.error(e, exc_info=True)
+            logger.error(e, exc_info=True)
         return
 
     def insert(self, query, params):
@@ -123,7 +125,7 @@ class DBHandler:
             cursor.close()
             return True
         except Exception as e:
-            logging.error(e, exc_info=True)
+            logger.error(e, exc_info=True)
         return False
 
     def is_district_processed(self, district_id):

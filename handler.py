@@ -11,6 +11,9 @@ from helpers.queries import USER_PATTERN_MATCH, GET_USER_QUERY, UPDATE_USER_VERI
 from helpers.utils import response_handler, get_preference_slots, sqs, send_historical_diff
 from datetime import date
 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
 def get_states(event, context):
     cowin = CowinAPI()
     states = cowin.get_states()
@@ -73,16 +76,18 @@ def trigger_district_updates(event, context):
     districts = db.candidate_districts()
     for district in districts:
         if district:
-            sqs.send_message(MessageBody=district, QueueUrl=os.getenv('DISTRICT_QUEUE_URL'))
-            logging.info(f'Sent district_id {district} to DISTRICT_QUEUE')
+            logger.info(f'District: {district}')
+            sqs.send_message(MessageBody=json.dumps({'district':district}), QueueUrl=os.getenv('DISTRICT_QUEUE_URL'))
+            logger.info(f'Sent district_id {district} to DISTRICT_QUEUE')
     return response_handler({},200)
 
 def update_district_slots(event, context):
-    processed_districts = ''
+    processed_districts = set()
+    logger.info(f'Event: {event}')
     for record in event['Records']:
-        district_id = record['body']
+        district_id = json.loads(record['body'])['district']
         send_historical_diff(district_id)
-        processed_districts+=district_id+' '
+        processed_districts.add(district_id)
         sqs.delete_message(ReceiptHandle=record['receiptHandle'], QueueUrl=os.getenv('DISTRICT_QUEUE_URL'))
     return response_handler({'message': f'Districts {processed_districts} processed'},200)
 
@@ -91,8 +96,9 @@ def notif_dispatcher(event, context):
     db = DBHandler.get_instance()
     for record in event['Records']:
         message = json.loads(record['body'])
+        logger.info(f'message: {message}')
         user_emails = [row[0] for row in db.query(USER_PATTERN_MATCH,('email',message['district_id'],message['age_group'],message['vaccine']))]
-        logging.info(f'Users to send emails to: {user_emails}')
+        logger.info(f'Users to send emails to: {user_emails}')
         notif.send_emails(user_emails, message)
         sqs.delete_message(ReceiptHandle=record['receiptHandle'], QueueUrl=os.getenv('NOTIF_QUEUE_URL'))
     return response_handler({'message': f'All notifs processed'},200)

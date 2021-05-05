@@ -37,16 +37,16 @@ provider:
   apiGateway:
     shouldStartNameWithService: true
 
-plugins:
-  - serverless-python-requirements
-  - serverless-secrets-plugin
-
 package:
   individually: true
   exclude:
     - venv/**
     - node_modules/**
     - frontend/**
+
+plugins:
+  - serverless-python-requirements
+  - serverless-secrets-plugin
 
 functions:
   get_states:
@@ -96,7 +96,10 @@ functions:
   trigger_district_updates:
     handler: handler.trigger_district_updates
     events:
-      - schedule: rate(5 minutes)
+      - http:
+          path: /trigger
+          method: post
+          cors: true
 
   update_district_slots:
     handler: handler.update_district_slots
@@ -104,7 +107,7 @@ functions:
     events:
       - sqs:
           arn: !GetAtt DistrictQueue.Arn
-          batchSize: 10
+          batchSize: 1
 
   notif_dispatcher:
     handler: handler.notif_dispatcher

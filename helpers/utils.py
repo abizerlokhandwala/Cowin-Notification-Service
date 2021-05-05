@@ -13,6 +13,9 @@ from helpers.queries import ADD_DISTRICT_PROCESSED, ADD_PROCESSED_DISTRICTS
 
 sqs = boto3.client('sqs', region_name='ap-south-1')
 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
 def response_handler(body, status):
     return {
         "statusCode": status,
@@ -82,18 +85,18 @@ def send_historical_diff(district_id):
     db = DBHandler.get_instance()
     weeks = NUM_WEEKS
     db_data = db.get_historical_data(district_id, date.today().strftime("%d-%m-%Y"))
+    # logger.info(f'DB Data: {db_data}')
     is_district_processed = db.is_district_processed(district_id)
     for week in range(0,weeks):
         itr_date = (date.today() + timedelta(weeks=week)).strftime("%d-%m-%Y")
         response = cowin.get_centers_7(district_id, itr_date)
+        # logger.info(f'Cowin centers: {response}')
         for center in response:
             for session in center['sessions']:
                 if session['available_capacity'] > 0:
                     if get_historical_ds(district_id, center['center_id'], session['date'], session['min_age_limit']
                                           ,get_vaccine(session['vaccine'])) in db_data:
                         continue
-                    db.insert(ADD_DISTRICT_PROCESSED, (district_id, center['center_id'], session['date'], session['min_age_limit']
-                                          ,get_vaccine(session['vaccine'])))
                     if is_district_processed:
                         message = {
                             'district_id': district_id,
@@ -111,8 +114,10 @@ def send_historical_diff(district_id):
                             'slots': session['slots'],
                             'capacity': session['available_capacity']
                         }
-                        logging.info(f'{message} sent to notif queue')
+                        logger.info(f'{message} sent to notif queue')
                         sqs.send_message(MessageBody=json.dumps(message), QueueUrl=os.getenv('NOTIF_QUEUE_URL'))
+                    db.insert(ADD_DISTRICT_PROCESSED, (district_id, center['center_id'], session['date'], session['min_age_limit']
+                                          ,get_vaccine(session['vaccine'])))
     if not is_district_processed:
         db.insert(ADD_PROCESSED_DISTRICTS,(district_id,))
     return

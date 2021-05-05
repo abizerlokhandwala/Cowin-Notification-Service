@@ -7,6 +7,9 @@ from helpers.db_handler import DBHandler
 from helpers.queries import ADD_USER_TOKEN
 from helpers.ses_handler import SESHandler
 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
 
 class NotifHandler:
 
@@ -28,7 +31,7 @@ class NotifHandler:
                 email_chunk = [email]
         if email_chunk:
             ses.send_email(os.getenv('SENDER_EMAIL'), email_chunk, email_subject, email_body)
-        logging.info('Emails Sent')
+        logger.info('Emails Sent')
         return
 
     def send_verification_email(self, user_email):
