@@ -1,9 +1,10 @@
 import logging
 import os
+from datetime import date, timedelta
 
 import requests
 
-from helpers.constants import STATES_URL, DISTRICTS_URL, CALENDAR_BY_DISTRICT_URL
+from helpers.constants import STATES_URL, DISTRICTS_URL, CALENDAR_BY_DISTRICT_URL, FIND_BY_DISTRICT_URL
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -27,7 +28,12 @@ class CowinAPI:
         response = response.json()
         return response['districts']
 
-    def get_centers_7(self, district_id, date):
-        response = requests.get(f'{CALENDAR_BY_DISTRICT_URL}?district_id={district_id}&date={date}', headers=self.headers)
+    def get_centers_7(self, district_id, date_val):
+        response = requests.get(f'{FIND_BY_DISTRICT_URL}?district_id={district_id}&date={date_val}', headers=self.headers)
         response = response.json()
-        return response['centers']
+        centers = response['sessions']
+        date_tomorrow = (date.today() + timedelta(days=1)).strftime("%d-%m-%Y")
+        response = requests.get(f'{FIND_BY_DISTRICT_URL}?district_id={district_id}&date={date_tomorrow}', headers=self.headers)
+        response = response.json()
+        centers+=response['sessions']
+        return centers

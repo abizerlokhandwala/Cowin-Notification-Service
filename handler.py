@@ -94,6 +94,7 @@ def update_district_slots(event, context):
 def notif_dispatcher(event, context):
     notif = NotifHandler()
     db = DBHandler.get_instance()
+    logger.info(f'Event: {event}')
     for record in event['Records']:
         message = json.loads(record['body'])
         logger.info(f'message: {message}')
