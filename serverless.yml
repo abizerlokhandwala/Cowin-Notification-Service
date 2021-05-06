@@ -104,7 +104,6 @@ functions:
 
   update_district_slots:
     handler: handler.update_district_slots
-    reservedConcurrency: 50
     events:
       - sqs:
           arn: !GetAtt DistrictQueue.Arn

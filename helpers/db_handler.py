@@ -21,13 +21,13 @@ class DBHandler:
             port=int(os.getenv('DB_PORT')),
             user=os.getenv('DB_USER'),
             password=os.getenv('DB_PASSWORD'))
-        DBHandler.__instance = self
+        # DBHandler.__instance = self
 
     @staticmethod
     def get_instance():
-        if DBHandler.__instance is None:
-            DBHandler()
-        return DBHandler.__instance
+        # if DBHandler.__instance is None:
+        return DBHandler()
+        # return DBHandler.__instance
 
     def subscribe(self, body):
         email = body['email']
