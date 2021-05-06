@@ -21,7 +21,7 @@ NUM_WEEKS = 1
 
 EMAIL_SUBJECT = '%s vaccine slots available at %s!'
 
-EMAIL_BODY = """<html>
+EMAIL_BODY = f"""<html>
     <body>
       <p>New vaccine slot available!<br>
         %s in %s on %s
@@ -40,8 +40,12 @@ EMAIL_BODY = """<html>
       <p>
       Slots: %s
       </p>
+      
     </body>
-    </html>"""
+      <p>
+      To unsubscribe from further notifications, please click here: {WEBSITE_URL}/unsubscribe?email=%s
+      </p>
+      </html>"""
 
 VERIFY_SUBJECT = 'Please verify your email'
 

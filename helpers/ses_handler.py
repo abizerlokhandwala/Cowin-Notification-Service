@@ -20,27 +20,26 @@ class SESHandler:
         return SESHandler.__instance
 
     def send_email(self, sender, recipients, subject, body_html):
-        CHARSET = "UTF-8"
-        response = self.client.send_email(
-            Destination={
-                'BccAddresses': recipients,
-            },
-            Message={
-                'Body': {
-                    'Html': {
-                        'Charset': CHARSET,
-                        'Data': body_html,
-                    }
-                },
-                'Subject': {
-                    'Charset': CHARSET,
-                    'Data': subject,
-                },
-            },
-            Source=sender,
-        )
         try:
-            pass
+            CHARSET = "UTF-8"
+            response = self.client.send_email(
+                Destination={
+                    'BccAddresses': recipients,
+                },
+                Message={
+                    'Body': {
+                        'Html': {
+                            'Charset': CHARSET,
+                            'Data': body_html,
+                        }
+                    },
+                    'Subject': {
+                        'Charset': CHARSET,
+                        'Data': subject,
+                    },
+                },
+                Source=sender,
+            )
         except ClientError as e:
             logger.error(e.response['Error']['Message'])
             return False

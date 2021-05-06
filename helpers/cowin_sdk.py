@@ -1,4 +1,5 @@
 import logging
+import os
 
 import requests
 
@@ -10,7 +11,10 @@ logger.setLevel(logging.INFO)
 class CowinAPI:
 
     def __init__(self):
-        self.headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
+        self.headers = {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36',
+            'Authorization': f'Bearer {os.getenv("AUTH_TOKEN")}'
+        }
         pass
 
     def get_states(self):

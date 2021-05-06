@@ -34,6 +34,7 @@ provider:
       NOTIF_QUEUE_URL: !Ref NotificationQueue
       SENDER_EMAIL: ${self:custom.secrets.SENDER_EMAIL}
       WEBSITE_URL: ${self:custom.secrets.WEBSITE_URL}
+      AUTH_TOKEN: ${self:custom.secrets.AUTH_TOKEN}
   apiGateway:
     shouldStartNameWithService: true
 

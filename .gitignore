@@ -140,3 +140,4 @@ cython_debug/
 .serverless/
 env
 secrets.dev.yml
+env.sh
