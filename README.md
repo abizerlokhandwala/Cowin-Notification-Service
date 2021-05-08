@@ -5,3 +5,5 @@ An AWS hosted Scalable Notification Service designed for the Cowin Vaccination R
  1. Subscribe to email notifications based on your state, district, vaccine preference and age group.
  2. Receive real-time emails whenever a new slot is updated.
  3. View existing slots for any preferences you choose.
+
+Deployed URL: https://vaccinepost.co.in/
