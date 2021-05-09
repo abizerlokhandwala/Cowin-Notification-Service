@@ -71,10 +71,10 @@ class DBHandler:
         cursor.close()
         return verified, verification_token
 
-    def unsubscribe(self, email):
+    def unsubscribe(self, email, token):
         try:
             cursor = self.connection.cursor()
-            cursor.execute(UNSUBSCRIBE_USER_SUBSCRIPTION, (email,))
+            cursor.execute(UNSUBSCRIBE_USER_SUBSCRIPTION, (email,token))
             self.connection.commit()
             cursor.close()
         except Exception as e:

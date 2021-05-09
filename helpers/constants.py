@@ -1,3 +1,4 @@
+import json
 import os
 
 COWIN_URL = 'https://cdn-api.co-vin.in/api/v2/'
@@ -20,7 +21,7 @@ ISSUE_MSG = 'There was an issue with your request, please contact the developers
 
 NUM_WEEKS = 1
 
-EMAIL_SUBJECT = '%s vaccine slots available at %s!'
+EMAIL_SUBJECT = '%s vaccine slots available at %s - %s!'
 
 EMAIL_BODY = f"""<html>
     <body>
@@ -44,7 +45,7 @@ EMAIL_BODY = f"""<html>
       
     </body>
       <p>
-      To unsubscribe from further notifications, please click here: {WEBSITE_URL}/unsubscribe?email=%s
+      To unsubscribe from further notifications, please click here: {WEBSITE_URL}/unsubscribe?email=%s&token=%s
       </p>
       </html>"""
 
@@ -56,3 +57,19 @@ VERIFY_EMAIL_BODY = f"""<html>
       </p>
     </body>
     </html>"""
+
+TEMPLATE_DATA = f"""{{
+    "center_name": "%s",
+    "slots": "%s",
+    "district_name": "%s",
+    "date": "%s",
+    "age_group": "%s",
+    "vaccine": "%s",
+    "address": "%s",
+    "pincode": "%s",
+    "unsub_endpoint": "%s",
+    "capacity": "%s",
+    "fee_type": "%s"
+}}"""
+
+UNSUB_ENDPOINT = f"{WEBSITE_URL}/unsubscribe?email=%s&token=%s"

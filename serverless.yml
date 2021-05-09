@@ -125,13 +125,23 @@ functions:
           method: post
           cors: true
 
+  test_email:
+    handler: handler.test_email
+    events:
+      - http:
+          path: /test_email
+          method: post
+          cors: true
+
 resources:
   Resources:
     DistrictQueue:
       Type: AWS::SQS::Queue
       Properties:
         VisibilityTimeout: 120
+        MessageRetentionPeriod: 60
     NotificationQueue:
       Type: AWS::SQS::Queue
       Properties:
         VisibilityTimeout: 120
+        MessageRetentionPeriod: 120

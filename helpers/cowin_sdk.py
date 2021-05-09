@@ -1,5 +1,5 @@
 import logging
-import os
+import random
 from datetime import date, timedelta
 
 import requests
@@ -12,28 +12,63 @@ logger.setLevel(logging.INFO)
 class CowinAPI:
 
     def __init__(self):
-        self.headers = {
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36',
-            'Authorization': f'Bearer {os.getenv("AUTH_TOKEN")}'
-        }
+        self.user_agent_list = open('./helpers/ua.txt').read().splitlines()
         pass
 
     def get_states(self):
-        response = requests.get(STATES_URL, headers=self.headers)
+        headers = {
+            'User-Agent': random.choice(self.user_agent_list)
+        }
+        response = requests.get(STATES_URL, headers=headers)
         response = response.json()
         return response['states']
 
     def get_districts(self, state_id):
-        response = requests.get(f'{DISTRICTS_URL}{state_id}', headers=self.headers)
+        headers = {
+            'User-Agent': random.choice(self.user_agent_list)
+        }
+        response = requests.get(f'{DISTRICTS_URL}{state_id}', headers=headers)
         response = response.json()
         return response['districts']
 
     def get_centers_7(self, district_id, date_val):
-        response = requests.get(f'{FIND_BY_DISTRICT_URL}?district_id={district_id}&date={date_val}', headers=self.headers)
-        response = response.json()
+        headers = {
+            'User-Agent': random.choice(self.user_agent_list)
+        }
+        response = requests.get(f'{CALENDAR_BY_DISTRICT_URL}?district_id={district_id}&date={date_val}', headers=headers)
+        logger.info(f'Status: {response.status_code}')
+        if response.status_code >= 400:
+            response = {
+                'centers':[]
+            }
+        else:
+            response = response.json()
+        centers = response['centers']
+        return centers
+
+    def get_centers_7_old(self, district_id, date_val):
+        headers = {
+            'User-Agent': random.choice(self.user_agent_list)
+        }
+        response = requests.get(f'{FIND_BY_DISTRICT_URL}?district_id={district_id}&date={date_val}', headers=headers)
+        logger.info(f'Status: {response.status_code}')
+        if response.status_code >= 400:
+            response = {
+                'centers':[]
+            }
+        else:
+            response = response.json()
         centers = response['sessions']
         date_tomorrow = (date.today() + timedelta(days=1)).strftime("%d-%m-%Y")
-        response = requests.get(f'{FIND_BY_DISTRICT_URL}?district_id={district_id}&date={date_tomorrow}', headers=self.headers)
-        response = response.json()
+        headers = {
+            'User-Agent': random.choice(self.user_agent_list)
+        }
+        response = requests.get(f'{FIND_BY_DISTRICT_URL}?district_id={district_id}&date={date_tomorrow}', headers=headers)
+        if response.status_code >= 400:
+            response = {
+                'centers': []
+            }
+        else:
+            response = response.json()
         centers+=response['sessions']
         return centers

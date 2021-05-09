@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+import random
 
 from helpers.constants import ISSUE_MSG
 from helpers.cowin_sdk import CowinAPI
@@ -8,7 +9,7 @@ from helpers.db_handler import DBHandler
 from helpers.decorators import validate_args
 from helpers.notificationHandler import NotifHandler
 from helpers.queries import USER_PATTERN_MATCH, GET_USER_QUERY, UPDATE_USER_VERIFIED
-from helpers.utils import response_handler, get_preference_slots, sqs, send_historical_diff
+from helpers.utils import response_handler, get_preference_slots, sqs, send_historical_diff, calculate_hash_int
 from datetime import date
 
 logger = logging.getLogger(__name__)
@@ -53,8 +54,9 @@ def subscribe(event, context):
 
 def unsubscribe(event, context):
     user_email = event["queryStringParameters"]["email"]
+    token = event["queryStringParameters"]["token"]
     db = DBHandler.get_instance()
-    if db.unsubscribe(user_email):
+    if db.unsubscribe(user_email, token):
         return response_handler({'message': f'Unsubscribed successfully!'}, 200)
     else:
         return response_handler({'message': ISSUE_MSG}, status=400)
@@ -76,30 +78,45 @@ def trigger_district_updates(event, context):
     districts = db.candidate_districts()
     for district in districts:
         if district:
-            logger.info(f'District: {district}')
             sqs.send_message(MessageBody=json.dumps({'district':district}), QueueUrl=os.getenv('DISTRICT_QUEUE_URL'))
-            logger.info(f'Sent district_id {district} to DISTRICT_QUEUE')
     return response_handler({},200)
 
 def update_district_slots(event, context):
     processed_districts = set()
-    logger.info(f'Event: {event}')
     for record in event['Records']:
+        sqs.delete_message(ReceiptHandle=record['receiptHandle'], QueueUrl=os.getenv('DISTRICT_QUEUE_URL'))
+        seed = calculate_hash_int(record['receiptHandle'])
+        random.seed(seed)
         district_id = json.loads(record['body'])['district']
         send_historical_diff(district_id)
         processed_districts.add(district_id)
-        sqs.delete_message(ReceiptHandle=record['receiptHandle'], QueueUrl=os.getenv('DISTRICT_QUEUE_URL'))
     return response_handler({'message': f'Districts {processed_districts} processed'},200)
 
 def notif_dispatcher(event, context):
     notif = NotifHandler()
     db = DBHandler.get_instance()
-    logger.info(f'Event: {event}')
     for record in event['Records']:
         message = json.loads(record['body'])
-        logger.info(f'message: {message}')
-        user_emails = [row[0] for row in db.query(USER_PATTERN_MATCH,('email',message['district_id'],message['age_group'],message['vaccine']))]
-        logger.info(f'Users to send emails to: {user_emails}')
-        notif.send_emails(user_emails, message)
+        user_info = [(row[0], row[1]) for row in db.query(USER_PATTERN_MATCH,('email',message['district_id'],message['age_group'],message['vaccine']))]
+        logger.info(f'Users to send emails to: {user_info}')
+        message['age_group']+='+'
+        message['age_group'] = message['age_group'].replace('above_','')
+        notif.send_template_emails(user_info, message)
         sqs.delete_message(ReceiptHandle=record['receiptHandle'], QueueUrl=os.getenv('NOTIF_QUEUE_URL'))
     return response_handler({'message': f'All notifs processed'},200)
+
+def test_email(event, context):
+    notif = NotifHandler()
+    notif.send_template_emails([('abizerL123@gmail.com','abc'),('sharangpai123@gmail.com','abc'),('pujan.iceman@gmail.com','abc'),('shloksingh10@gmail.com','abc'),('arsenal.arpit11@gmail.com','abc')],{
+    'center_name': 'test_center',
+    'slots': '[1-2]',
+    'district_name': 'test_district',
+    'date': '1-1-1',
+    'age_group': '45',
+    'vaccine': 'covishield',
+    'address': 'abc, pqr, xyz',
+    'pincode': '411040',
+    'capacity': '5',
+    'fee_type': 'free'
+})
+    return

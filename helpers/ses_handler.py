@@ -1,6 +1,9 @@
+import json
 import logging
 import boto3
 from botocore.exceptions import ClientError
+
+from helpers.constants import TEMPLATE_DATA
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -43,6 +46,19 @@ class SESHandler:
         except ClientError as e:
             logger.error(e.response['Error']['Message'])
             return False
-        else:
-            logger.info(f"Emails sent to {recipients}")
+        return response
+
+    def send_template_email(self, sender, recipients, template_data):
+        try:
+            response = self.client.send_templated_email(
+                Destination={
+                    'ToAddresses': recipients
+                },
+                Source=sender,
+                Template='vaccinepost',
+                TemplateData=template_data
+            )
+        except Exception as e:
+            logger.error(e,exc_info=True)
+            return False
         return response
