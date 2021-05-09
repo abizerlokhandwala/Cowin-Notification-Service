@@ -127,11 +127,6 @@ functions:
 
   test_email:
     handler: handler.test_email
-    events:
-      - http:
-          path: /test_email
-          method: post
-          cors: true
 
 resources:
   Resources:

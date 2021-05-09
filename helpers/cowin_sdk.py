@@ -54,7 +54,7 @@ class CowinAPI:
         logger.info(f'Status: {response.status_code}')
         if response.status_code >= 400:
             response = {
-                'centers':[]
+                'sessions':[]
             }
         else:
             response = response.json()
@@ -66,7 +66,7 @@ class CowinAPI:
         response = requests.get(f'{FIND_BY_DISTRICT_URL}?district_id={district_id}&date={date_tomorrow}', headers=headers)
         if response.status_code >= 400:
             response = {
-                'centers': []
+                'sessions': []
             }
         else:
             response = response.json()
