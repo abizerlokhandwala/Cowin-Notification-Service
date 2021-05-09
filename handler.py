@@ -85,7 +85,7 @@ def trigger_district_updates(event, context):
 
 def update_district_slots(event, context):
     processed_districts = set()
-    logger.info(f"IP: {requests.get('https://api.ipify.org').text}")
+    # logger.info(f"IP: {requests.get('https://api.ipify.org').text}")
     for record in event['Records']:
         sqs.delete_message(ReceiptHandle=record['receiptHandle'], QueueUrl=os.getenv('DISTRICT_QUEUE_URL'))
         seed = calculate_hash_int(record['receiptHandle'])

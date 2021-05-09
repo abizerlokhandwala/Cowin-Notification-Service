@@ -3,6 +3,7 @@ import logging
 import os
 
 from datetime import date, timedelta
+import time
 
 import boto3
 
@@ -88,35 +89,35 @@ def send_historical_diff(district_id):
     is_district_processed = db.is_district_processed(district_id)
     for week in range(0,weeks):
         itr_date = (date.today() + timedelta(weeks=week)).strftime("%d-%m-%Y")
-        response = cowin.get_centers_7(district_id, itr_date)
+        response = cowin.get_centers_7_old(district_id, itr_date)
         if not response:
+            time.sleep(0.5) # To force the lambda to increase concurrent executions
             return
-        for center in response:
-            for session in center['sessions']:
-                if session['available_capacity'] > 5:
-                    if get_historical_ds(district_id, center['center_id'], session['date'], session['min_age_limit']
-                                          ,get_vaccine(session['vaccine'])) in db_data:
-                        continue
-                    if is_district_processed:
-                        message = {
-                            'district_id': district_id,
-                            'center_id': center['center_id'],
-                            'center_name':  center['name'],
-                            'address': center['address'],
-                            'district_name': center['district_name'],
-                            'pincode': center['pincode'],
-                            'from': center['from'],
-                            'to': center['to'],
-                            'fee_type': center['fee_type'],
-                            'date': session['date'],
-                            'age_group': f'above_{session["min_age_limit"]}',
-                            'vaccine': get_vaccine(session['vaccine']),
-                            'slots': session['slots'],
-                            'capacity': session['available_capacity']
-                        }
-                        sqs.send_message(MessageBody=json.dumps(message), QueueUrl=os.getenv('NOTIF_QUEUE_URL'))
-                    db.insert(ADD_DISTRICT_PROCESSED, (district_id, center['center_id'], session['date'], session['min_age_limit']
-                                          ,get_vaccine(session['vaccine'])))
+        for session in response:
+            if session['available_capacity'] > 5:
+                if get_historical_ds(district_id, session['center_id'], session['date'], session['min_age_limit']
+                                      ,get_vaccine(session['vaccine'])) in db_data:
+                    continue
+                if is_district_processed:
+                    message = {
+                        'district_id': district_id,
+                        'center_id': session['center_id'],
+                        'center_name':  session['name'],
+                        'address': session['address'],
+                        'district_name': session['district_name'],
+                        'pincode': session['pincode'],
+                        'from': session['from'],
+                        'to': session['to'],
+                        'fee_type': session['fee_type'],
+                        'date': session['date'],
+                        'age_group': f'above_{session["min_age_limit"]}',
+                        'vaccine': get_vaccine(session['vaccine']),
+                        'slots': session['slots'],
+                        'capacity': session['available_capacity']
+                    }
+                    sqs.send_message(MessageBody=json.dumps(message), QueueUrl=os.getenv('NOTIF_QUEUE_URL'))
+                db.insert(ADD_DISTRICT_PROCESSED, (district_id, session['center_id'], session['date'], session['min_age_limit']
+                                      ,get_vaccine(session['vaccine'])))
     if not is_district_processed:
         db.insert(ADD_PROCESSED_DISTRICTS,(district_id,))
     return

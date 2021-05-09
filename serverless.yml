@@ -10,7 +10,8 @@ custom:
 provider:
   name: aws
   runtime: python3.8
-  timeout: 30
+  timeout: 5
+  memorySize: 128
   lambdaHashingVersion: 20201221
   stage: dev
   region: ap-south-1
@@ -41,6 +42,13 @@ provider:
 plugins:
   - serverless-python-requirements
   - serverless-secrets-plugin
+
+package:
+      individually: true
+      exclude:
+        - venv/**
+        - node_modules/**
+        - frontend/**
 
 functions:
   get_states:
@@ -96,12 +104,6 @@ functions:
           cors: true
 
   update_district_slots:
-    package:
-      individually: true
-      exclude:
-        - venv/**
-        - node_modules/**
-        - frontend/**
     handler: handler.update_district_slots
     events:
       - sqs:
