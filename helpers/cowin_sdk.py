@@ -1,10 +1,12 @@
 import logging
 import random
+import string
 from datetime import date, timedelta
 
 import requests
 
-from helpers.constants import STATES_URL, DISTRICTS_URL, CALENDAR_BY_DISTRICT_URL, FIND_BY_DISTRICT_URL
+from helpers.constants import STATES_URL, DISTRICTS_URL, CALENDAR_BY_DISTRICT_URL, FIND_BY_DISTRICT_URL, \
+    CALENDAR_BY_DISTRICT_PUBLIC_URL
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -13,11 +15,16 @@ class CowinAPI:
 
     def __init__(self):
         self.user_agent_list = open('./helpers/ua.txt').read().splitlines()
+        self.len = 30
         pass
+
+    def random_str(self):
+        res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=self.len))
+        return str(res)
 
     def get_states(self):
         headers = {
-            'User-Agent': random.choice(self.user_agent_list)
+            'User-Agent': self.random_str()
         }
         response = requests.get(STATES_URL, headers=headers)
         response = response.json()
@@ -25,7 +32,7 @@ class CowinAPI:
 
     def get_districts(self, state_id):
         headers = {
-            'User-Agent': random.choice(self.user_agent_list)
+            'User-Agent': self.random_str()
         }
         response = requests.get(f'{DISTRICTS_URL}{state_id}', headers=headers)
         response = response.json()
@@ -33,9 +40,9 @@ class CowinAPI:
 
     def get_centers_7(self, district_id, date_val):
         headers = {
-            'User-Agent': random.choice(self.user_agent_list)
+            'User-Agent': self.random_str()
         }
-        response = requests.get(f'{CALENDAR_BY_DISTRICT_URL}?district_id={district_id}&date={date_val}', headers=headers)
+        response = requests.get(f'{CALENDAR_BY_DISTRICT_PUBLIC_URL}?district_id={district_id}&date={date_val}', headers=headers)
         logger.info(f'Status: {response.status_code}')
         if response.status_code >= 400:
             response = {
@@ -48,7 +55,7 @@ class CowinAPI:
 
     def get_centers_7_old(self, district_id, date_val):
         headers = {
-            'User-Agent': random.choice(self.user_agent_list)
+            'User-Agent': self.random_str()
         }
         response = requests.get(f'{FIND_BY_DISTRICT_URL}?district_id={district_id}&date={date_val}', headers=headers)
         logger.info(f'Status: {response.status_code}')
@@ -61,7 +68,7 @@ class CowinAPI:
         centers = response['sessions']
         date_tomorrow = (date.today() + timedelta(days=1)).strftime("%d-%m-%Y")
         headers = {
-            'User-Agent': random.choice(self.user_agent_list)
+            'User-Agent': self.random_str()
         }
         response = requests.get(f'{FIND_BY_DISTRICT_URL}?district_id={district_id}&date={date_tomorrow}', headers=headers)
         if response.status_code >= 400:

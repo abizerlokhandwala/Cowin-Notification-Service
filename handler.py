@@ -3,6 +3,8 @@ import logging
 import os
 import random
 
+import requests
+
 from helpers.constants import ISSUE_MSG
 from helpers.cowin_sdk import CowinAPI
 from helpers.db_handler import DBHandler
@@ -83,11 +85,13 @@ def trigger_district_updates(event, context):
 
 def update_district_slots(event, context):
     processed_districts = set()
+    logger.info(f"IP: {requests.get('https://api.ipify.org').text}")
     for record in event['Records']:
         sqs.delete_message(ReceiptHandle=record['receiptHandle'], QueueUrl=os.getenv('DISTRICT_QUEUE_URL'))
         seed = calculate_hash_int(record['receiptHandle'])
         random.seed(seed)
         district_id = json.loads(record['body'])['district']
+    # district_id = 363
         send_historical_diff(district_id)
         processed_districts.add(district_id)
     return response_handler({'message': f'Districts {processed_districts} processed'},200)

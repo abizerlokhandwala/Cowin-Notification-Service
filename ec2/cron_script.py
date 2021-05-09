@@ -10,6 +10,7 @@ client = boto3.client('lambda', region_name='ap-south-1',
 
 if __name__ == "__main__":
     while True:
+
         response = client.invoke(FunctionName="cowin-notification-service-dev-trigger_district_updates",
                       InvocationType='Event',Payload='')
-        time.sleep(20)
+        time.sleep(10)

@@ -38,13 +38,6 @@ provider:
   apiGateway:
     shouldStartNameWithService: true
 
-package:
-  individually: true
-  exclude:
-    - venv/**
-    - node_modules/**
-    - frontend/**
-
 plugins:
   - serverless-python-requirements
   - serverless-secrets-plugin
@@ -103,6 +96,12 @@ functions:
           cors: true
 
   update_district_slots:
+    package:
+      individually: true
+      exclude:
+        - venv/**
+        - node_modules/**
+        - frontend/**
     handler: handler.update_district_slots
     events:
       - sqs:
