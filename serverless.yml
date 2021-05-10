@@ -24,6 +24,7 @@ provider:
             - cloudwatch:*
             - sqs:*
             - ses:*
+            - lambda:*
           Resource: '*'
   environment:
       DB_HOSTNAME: ${self:custom.secrets.DB_HOSTNAME}
@@ -31,7 +32,6 @@ provider:
       DB_PORT: ${self:custom.secrets.DB_PORT}
       DB_USER: ${self:custom.secrets.DB_USER}
       DB_NAME: ${self:custom.secrets.DB_NAME}
-      DISTRICT_QUEUE_URL: !Ref DistrictQueue
       NOTIF_QUEUE_URL: !Ref NotificationQueue
       SENDER_EMAIL: ${self:custom.secrets.SENDER_EMAIL}
       WEBSITE_URL: ${self:custom.secrets.WEBSITE_URL}
@@ -106,11 +106,6 @@ functions:
   update_district_slots:
     handler: handler.update_district_slots
     timeout: 30
-    events:
-      - sqs:
-          arn: !GetAtt DistrictQueue.Arn
-          batchSize: 30
-          maximumBatchingWindow: 2
 
   notif_dispatcher:
     handler: handler.notif_dispatcher
@@ -134,11 +129,6 @@ functions:
 
 resources:
   Resources:
-    DistrictQueue:
-      Type: AWS::SQS::Queue
-      Properties:
-        VisibilityTimeout: 120
-        MessageRetentionPeriod: 60
     NotificationQueue:
       Type: AWS::SQS::Queue
       Properties:
