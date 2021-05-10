@@ -2,6 +2,8 @@ import json
 import logging
 import os
 import random
+import time
+import uuid
 
 import requests
 
@@ -78,9 +80,18 @@ def verify_email(event, context):
 def trigger_district_updates(event, context):
     db = DBHandler.get_instance()
     districts = db.candidate_districts()
+    batch = []
     for district in districts:
         if district:
-            sqs.send_message(MessageBody=json.dumps({'district':district}), QueueUrl=os.getenv('DISTRICT_QUEUE_URL'))
+            batch.append({
+                'Id': str(uuid.uuid4()),
+                'MessageBody': json.dumps({'district':district})
+            })
+            if len(batch)==10:
+                sqs.send_message_batch(QueueUrl=os.getenv('DISTRICT_QUEUE_URL'), Entries=batch)
+                batch.clear()
+    if batch:
+        sqs.send_message_batch(QueueUrl=os.getenv('DISTRICT_QUEUE_URL'), Entries=batch)
     return response_handler({},200)
 
 def update_district_slots(event, context):
@@ -94,6 +105,7 @@ def update_district_slots(event, context):
     # district_id = 363
         send_historical_diff(district_id)
         processed_districts.add(district_id)
+    time.sleep(1.5)  # To force the lambda to increase concurrent executions
     return response_handler({'message': f'Districts {processed_districts} processed'},200)
 
 def notif_dispatcher(event, context):

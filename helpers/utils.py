@@ -2,7 +2,7 @@ import json
 import logging
 import os
 
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 import time
 
 import boto3
@@ -85,17 +85,17 @@ def send_historical_diff(district_id):
     cowin = CowinAPI()
     db = DBHandler.get_instance()
     weeks = NUM_WEEKS
-    db_data = db.get_historical_data(district_id, date.today().strftime("%d-%m-%Y"))
+    db_data = db.get_historical_data(district_id, date.today().strftime("%Y-%m-%d"))
     is_district_processed = db.is_district_processed(district_id)
     for week in range(0,weeks):
         itr_date = (date.today() + timedelta(weeks=week)).strftime("%d-%m-%Y")
         response = cowin.get_centers_7_old(district_id, itr_date)
         if not response:
-            time.sleep(0.5) # To force the lambda to increase concurrent executions
             return
         for session in response:
-            if session['available_capacity'] > 5:
-                if get_historical_ds(district_id, session['center_id'], session['date'], session['min_age_limit']
+            if session['available_capacity'] >= 10:
+                if get_historical_ds(district_id, session['center_id'],
+                                     datetime.strptime(session['date'], '%d-%m-%Y').strftime('%Y-%m-%d'), session['min_age_limit']
                                       ,get_vaccine(session['vaccine'])) in db_data:
                     continue
                 if is_district_processed:
@@ -116,8 +116,9 @@ def send_historical_diff(district_id):
                         'capacity': session['available_capacity']
                     }
                     sqs.send_message(MessageBody=json.dumps(message), QueueUrl=os.getenv('NOTIF_QUEUE_URL'))
-                db.insert(ADD_DISTRICT_PROCESSED, (district_id, session['center_id'], session['date'], session['min_age_limit']
-                                      ,get_vaccine(session['vaccine'])))
+                db.insert(ADD_DISTRICT_PROCESSED, (district_id, session['center_id'],
+                                                   datetime.strptime(session['date'], '%d-%m-%Y').strftime('%Y-%m-%d'),
+                                                   session['min_age_limit'],get_vaccine(session['vaccine']), str(datetime.now())))
     if not is_district_processed:
         db.insert(ADD_PROCESSED_DISTRICTS,(district_id,))
     return

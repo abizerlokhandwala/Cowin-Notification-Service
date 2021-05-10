@@ -43,13 +43,6 @@ plugins:
   - serverless-python-requirements
   - serverless-secrets-plugin
 
-package:
-      individually: true
-      exclude:
-        - venv/**
-        - node_modules/**
-        - frontend/**
-
 functions:
   get_states:
     handler: handler.get_states
@@ -104,6 +97,13 @@ functions:
           cors: true
 
   update_district_slots:
+    package:
+      individually: true
+      exclude:
+        - venv/**
+        - node_modules/**
+        - frontend/**
+
     handler: handler.update_district_slots
     events:
       - sqs:
