@@ -24,6 +24,7 @@ provider:
             - cloudwatch:*
             - sqs:*
             - ses:*
+            - lambda:*
           Resource: '*'
   environment:
       DB_HOSTNAME: ${self:custom.secrets.DB_HOSTNAME}
@@ -106,11 +107,6 @@ functions:
   update_district_slots:
     handler: handler.update_district_slots
     timeout: 30
-    events:
-      - sqs:
-          arn: !GetAtt DistrictQueue.Arn
-          batchSize: 30
-          maximumBatchingWindow: 2
 
   notif_dispatcher:
     handler: handler.notif_dispatcher

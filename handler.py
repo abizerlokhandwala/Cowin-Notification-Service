@@ -83,21 +83,27 @@ def trigger_district_updates(event, context):
     districts = db.candidate_districts()
     client = boto3.client('lambda', region_name='ap-south-1')
     UPDATE_FUNCTION_NAME = 'cowin-notification-service-dev-update_district_slots'
+    batch = []
     for district in districts:
         if district:
-            resp = client.invoke(FunctionName=UPDATE_FUNCTION_NAME,
-                                     InvocationType='Event', Payload=json.dumps({'district': district}))
-            # No point in doing this, response takes about a second for each lambda, for 200+ districts it would take a lot of time
+            batch.append(district)
+            if len(batch)>=30:
+                client.invoke(FunctionName=UPDATE_FUNCTION_NAME,
+                                     InvocationType='Event', Payload=json.dumps({'districts': batch}))
+                batch.clear()
+    if len(batch) > 0:
+        client.invoke(FunctionName=UPDATE_FUNCTION_NAME,
+                      InvocationType='Event', Payload=json.dumps({'districts': batch}))
     return response_handler({},200)
 
 def update_district_slots(event, context):
     processed_districts = set()
     # logger.info(f"IP: {requests.get('https://api.ipify.org').text}")
-    body = json.loads(event['body'])
-    district_id = body['district']
-    # district_id = 363
-    send_historical_diff(district_id)
-    processed_districts.add(district_id)
+    districts = event['districts']
+    # districts = [363]
+    for district_id in districts:
+        send_historical_diff(district_id)
+        processed_districts.add(district_id)
     return response_handler({'message': f'Districts {processed_districts} processed'},200)
 
 def notif_dispatcher(event, context):
