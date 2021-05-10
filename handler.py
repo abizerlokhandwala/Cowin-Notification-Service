@@ -5,6 +5,7 @@ import random
 import time
 import uuid
 
+import boto3
 import requests
 
 from helpers.constants import ISSUE_MSG
@@ -80,32 +81,23 @@ def verify_email(event, context):
 def trigger_district_updates(event, context):
     db = DBHandler.get_instance()
     districts = db.candidate_districts()
-    batch = []
+    client = boto3.client('lambda', region_name='ap-south-1')
+    UPDATE_FUNCTION_NAME = 'cowin-notification-service-dev-update_district_slots'
     for district in districts:
         if district:
-            batch.append({
-                'Id': str(uuid.uuid4()),
-                'MessageBody': json.dumps({'district':district})
-            })
-            if len(batch)==10:
-                sqs.send_message_batch(QueueUrl=os.getenv('DISTRICT_QUEUE_URL'), Entries=batch)
-                batch.clear()
-    if batch:
-        sqs.send_message_batch(QueueUrl=os.getenv('DISTRICT_QUEUE_URL'), Entries=batch)
+            resp = client.invoke(FunctionName=UPDATE_FUNCTION_NAME,
+                                     InvocationType='Event', Payload=json.dumps({'district': district}))
+            # No point in doing this, response takes about a second for each lambda, for 200+ districts it would take a lot of time
     return response_handler({},200)
 
 def update_district_slots(event, context):
     processed_districts = set()
     # logger.info(f"IP: {requests.get('https://api.ipify.org').text}")
-    for record in event['Records']:
-        sqs.delete_message(ReceiptHandle=record['receiptHandle'], QueueUrl=os.getenv('DISTRICT_QUEUE_URL'))
-        seed = calculate_hash_int(record['receiptHandle'])
-        random.seed(seed)
-        district_id = json.loads(record['body'])['district']
+    body = json.loads(event['body'])
+    district_id = body['district']
     # district_id = 363
-        send_historical_diff(district_id)
-        processed_districts.add(district_id)
-    # time.sleep(0.5)  # To force the lambda to increase concurrent executions
+    send_historical_diff(district_id)
+    processed_districts.add(district_id)
     return response_handler({'message': f'Districts {processed_districts} processed'},200)
 
 def notif_dispatcher(event, context):
