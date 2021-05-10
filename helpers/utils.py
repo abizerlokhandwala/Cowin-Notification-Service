@@ -90,8 +90,6 @@ def send_historical_diff(district_id):
     for week in range(0,weeks):
         itr_date = (date.today() + timedelta(weeks=week)).strftime("%d-%m-%Y")
         response = cowin.get_centers_7_old(district_id, itr_date)
-        if not response:
-            return
         for session in response:
             if session['available_capacity'] >= 10:
                 if get_historical_ds(district_id, session['center_id'],

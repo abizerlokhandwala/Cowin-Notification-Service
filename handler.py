@@ -105,7 +105,7 @@ def update_district_slots(event, context):
     # district_id = 363
         send_historical_diff(district_id)
         processed_districts.add(district_id)
-    time.sleep(1.5)  # To force the lambda to increase concurrent executions
+    # time.sleep(0.5)  # To force the lambda to increase concurrent executions
     return response_handler({'message': f'Districts {processed_districts} processed'},200)
 
 def notif_dispatcher(event, context):
@@ -114,7 +114,7 @@ def notif_dispatcher(event, context):
     for record in event['Records']:
         message = json.loads(record['body'])
         user_info = [(row[0], row[1]) for row in db.query(USER_PATTERN_MATCH,('email',message['district_id'],message['age_group'],message['vaccine']))]
-        logger.info(f'Users to send emails to: {user_info}')
+        # logger.info(f'Users to send emails to: {user_info}')
         message['age_group']+='+'
         message['age_group'] = message['age_group'].replace('above_','')
         notif.send_template_emails(user_info, message)

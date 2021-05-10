@@ -35,13 +35,20 @@ provider:
       NOTIF_QUEUE_URL: !Ref NotificationQueue
       SENDER_EMAIL: ${self:custom.secrets.SENDER_EMAIL}
       WEBSITE_URL: ${self:custom.secrets.WEBSITE_URL}
-      AUTH_TOKEN: ${self:custom.secrets.AUTH_TOKEN}
+      DUMMY: 'abc'
   apiGateway:
     shouldStartNameWithService: true
 
 plugins:
   - serverless-python-requirements
   - serverless-secrets-plugin
+
+package:
+  individually: true
+  exclude:
+    - venv/**
+    - node_modules/**
+    - frontend/**
 
 functions:
   get_states:
@@ -97,22 +104,18 @@ functions:
           cors: true
 
   update_district_slots:
-    package:
-      individually: true
-      exclude:
-        - venv/**
-        - node_modules/**
-        - frontend/**
-
     handler: handler.update_district_slots
+    timeout: 30
     events:
       - sqs:
           arn: !GetAtt DistrictQueue.Arn
-          batchSize: 1
+          batchSize: 30
+          maximumBatchingWindow: 2
 
   notif_dispatcher:
     handler: handler.notif_dispatcher
     reservedConcurrency: 50
+    timeout: 10
     events:
       - sqs:
           arn: !GetAtt NotificationQueue.Arn
