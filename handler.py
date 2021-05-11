@@ -5,6 +5,8 @@ import os
 import random
 import uuid
 from datetime import date
+import boto3
+import requests
 
 from helpers.constants import ISSUE_MSG
 from helpers.cowin_sdk import CowinAPI
@@ -86,33 +88,31 @@ def verify_email(event, context):
 def trigger_district_updates(event, context):
     db = DBHandler.get_instance()
     districts = db.candidate_districts()
+    client = boto3.client('lambda', region_name='ap-south-1')
+    UPDATE_FUNCTION_NAME = 'cowin-notification-service-dev-update_district_slots'
     batch = []
     for district in districts:
         if district:
-            batch.append({
-                'Id': str(uuid.uuid4()),
-                'MessageBody': json.dumps({'district': district})
-            })
-            if len(batch) == 10:
-                sqs.send_message_batch(QueueUrl=os.getenv('DISTRICT_QUEUE_URL'), Entries=batch)
+            batch.append(district)
+            if len(batch)>=30:
+                client.invoke(FunctionName=UPDATE_FUNCTION_NAME,
+                                     InvocationType='Event', Payload=json.dumps({'districts': batch}))
                 batch.clear()
-    if batch:
-        sqs.send_message_batch(QueueUrl=os.getenv('DISTRICT_QUEUE_URL'), Entries=batch)
-    return response_handler({}, 200)
+    if len(batch) > 0:
+        client.invoke(FunctionName=UPDATE_FUNCTION_NAME,
+                      InvocationType='Event', Payload=json.dumps({'districts': batch}))
+    return response_handler({},200)
 
 
 def update_district_slots(event, context):
     processed_districts = set()
-    for record in event['Records']:
-        sqs.delete_message(ReceiptHandle=record['receiptHandle'], QueueUrl=os.getenv('DISTRICT_QUEUE_URL'))
-        seed = calculate_hash_int(record['receiptHandle'])
-        random.seed(seed)
-        district_ids = json.loads(record['body'])['districts']
-        get_event_loop().run_until_complete(asyncio.gather(*[send_historical_diff(district_id) for district_id in
+    # logger.info(f"IP: {requests.get('https://api.ipify.org').text}")
+    district_ids = event['districts']
+    # district_ids = [363]
+    get_event_loop().run_until_complete(asyncio.gather(*[send_historical_diff(district_id) for district_id in
                                                              district_ids]))
-        processed_districts |= district_ids
+    processed_districts |= district_ids
     return response_handler({'message': f'Districts {processed_districts} processed'}, 200)
-
 
 def notif_dispatcher(event, context):
     notif = NotifHandler()
@@ -121,7 +121,7 @@ def notif_dispatcher(event, context):
         message = json.loads(record['body'])
         user_info = [(row[0], row[1]) for row in db.query(USER_PATTERN_MATCH, (
             'email', message['district_id'], message['age_group'], message['vaccine']))]
-        logger.info(f'Users to send emails to: {user_info}')
+        # logger.info(f'Users to send emails to: {user_info}')
         message['age_group'] += '+'
         message['age_group'] = message['age_group'].replace('above_', '')
         notif.send_template_emails(user_info, message)
