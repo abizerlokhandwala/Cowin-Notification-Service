@@ -94,7 +94,7 @@ def trigger_district_updates(event, context):
     for district in districts:
         if district:
             batch.append(district)
-            if len(batch)>=30:
+            if len(batch) >= 30:
                 client.invoke(FunctionName=UPDATE_FUNCTION_NAME,
                                      InvocationType='Event', Payload=json.dumps({'districts': batch}))
                 batch.clear()
@@ -105,14 +105,12 @@ def trigger_district_updates(event, context):
 
 
 def update_district_slots(event, context):
-    processed_districts = set()
     # logger.info(f"IP: {requests.get('https://api.ipify.org').text}")
     district_ids = event['districts']
     # district_ids = [363]
     get_event_loop().run_until_complete(asyncio.gather(*[send_historical_diff(district_id) for district_id in
                                                              district_ids]))
-    processed_districts |= district_ids
-    return response_handler({'message': f'Districts {processed_districts} processed'}, 200)
+    return response_handler({'message': f'Districts {district_ids} processed'}, 200)
 
 def notif_dispatcher(event, context):
     notif = NotifHandler()
