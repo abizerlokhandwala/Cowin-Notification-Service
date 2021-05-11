@@ -7,3 +7,6 @@ An AWS hosted Scalable Notification Service designed for the Cowin Vaccination R
  3. View existing slots for any preferences you choose.
 
 Deployed URL: https://vaccinepost.co.in/
+
+Database Schema:
+![alt Database Schema](https://github.com/abizerlokhandwala/Cowin-Notification-Service/blob/main/images/db_er_diag.png)
