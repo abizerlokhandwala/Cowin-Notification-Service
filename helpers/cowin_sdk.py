@@ -77,7 +77,6 @@ class CowinAPI:
         async with aiohttp.ClientSession() as session:
             async with session.get(f'{FIND_BY_DISTRICT_URL}?district_id={district_id}&date={date_tomorrow}',
                                    headers=headers) as response:
-                logger.info(f'Status: {response.status}')
                 if response.status >= 400:
                     response = {
                         'sessions': []

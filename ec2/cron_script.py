@@ -1,8 +1,12 @@
+import logging
 import random
 import string
 import time
 import boto3
 import os
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 client = boto3.client('lambda', region_name='ap-south-1',
                       aws_access_key_id=os.getenv('aws_access_key'),
@@ -17,10 +21,14 @@ def random_str(length):
 
 if __name__ == "__main__":
     while True:
-        response = client.invoke(FunctionName=TRIGGER_FUNCTION_NAME,
-                      InvocationType='Event',Payload='')
-        var = client.get_function_configuration(FunctionName=UPDATE_FUNCTION_NAME)
-        var['Environment']['Variables']['DUMMY'] = random_str(20)
-        client.update_function_configuration(FunctionName=UPDATE_FUNCTION_NAME,
-                                             Environment=var['Environment'])
-        time.sleep(10)
+        try:
+            response = client.invoke(FunctionName=TRIGGER_FUNCTION_NAME,
+                          InvocationType='Event',Payload='')
+            var = client.get_function_configuration(FunctionName=UPDATE_FUNCTION_NAME)
+            var['Environment']['Variables']['DUMMY'] = random_str(20)
+            client.update_function_configuration(FunctionName=UPDATE_FUNCTION_NAME,
+                                                 Environment=var['Environment'])
+            time.sleep(10)
+        except Exception as e:
+            print(e)
+            pass

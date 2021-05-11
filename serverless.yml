@@ -110,7 +110,7 @@ functions:
   notif_dispatcher:
     handler: handler.notif_dispatcher
     reservedConcurrency: 50
-    timeout: 10
+    timeout: 30
     events:
       - sqs:
           arn: !GetAtt NotificationQueue.Arn
