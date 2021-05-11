@@ -1,16 +1,16 @@
 import logging
 import random
 import string
-import time
 from datetime import date, timedelta
 
+import aiohttp
 import requests
 
-from helpers.constants import STATES_URL, DISTRICTS_URL, CALENDAR_BY_DISTRICT_URL, FIND_BY_DISTRICT_URL, \
-    CALENDAR_BY_DISTRICT_PUBLIC_URL
+from helpers.constants import STATES_URL, DISTRICTS_URL, FIND_BY_DISTRICT_URL, CALENDAR_BY_DISTRICT_PUBLIC_URL
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
+
 
 class CowinAPI:
 
@@ -43,40 +43,46 @@ class CowinAPI:
         headers = {
             'User-Agent': self.random_str()
         }
-        response = requests.get(f'{CALENDAR_BY_DISTRICT_PUBLIC_URL}?district_id={district_id}&date={date_val}', headers=headers)
+        response = requests.get(f'{CALENDAR_BY_DISTRICT_PUBLIC_URL}?district_id={district_id}&date={date_val}',
+                                headers=headers)
         logger.info(f'Status: {response.status_code}')
         if response.status_code >= 400:
             response = {
-                'centers':[]
+                'centers': []
             }
         else:
             response = response.json()
         centers = response['centers']
         return centers
 
-    def get_centers_7_old(self, district_id, date_val):
+    async def get_centers_7_old(self, district_id, date_val):
         headers = {
             'User-Agent': self.random_str()
         }
-        response = requests.get(f'{FIND_BY_DISTRICT_URL}?district_id={district_id}&date={date_val}', headers=headers)
-        logger.info(f'Status: {response.status_code}')
-        if response.status_code >= 400:
-            response = {
-                'sessions':[]
-            }
-        else:
-            response = response.json()
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f'{FIND_BY_DISTRICT_URL}?district_id={district_id}&date={date_val}',
+                                   headers=headers) as response:
+                logger.info(f'Status: {response.status}')
+                if response.status >= 400:
+                    response = {
+                        'sessions': []
+                    }
+                else:
+                    response = await response.json()
         centers = response['sessions']
         date_tomorrow = (date.today() + timedelta(days=1)).strftime("%d-%m-%Y")
         headers = {
             'User-Agent': self.random_str()
         }
-        response = requests.get(f'{FIND_BY_DISTRICT_URL}?district_id={district_id}&date={date_tomorrow}', headers=headers)
-        if response.status_code >= 400:
-            response = {
-                'sessions': []
-            }
-        else:
-            response = response.json()
-        centers+=response['sessions']
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f'{FIND_BY_DISTRICT_URL}?district_id={district_id}&date={date_tomorrow}',
+                                   headers=headers) as response:
+                logger.info(f'Status: {response.status}')
+                if response.status >= 400:
+                    response = {
+                        'sessions': []
+                    }
+                else:
+                    response = await response.json()
+        centers += response['sessions']
         return centers
