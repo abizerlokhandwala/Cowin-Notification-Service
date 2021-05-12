@@ -115,15 +115,13 @@ def update_district_slots(event, context):
 def notif_dispatcher(event, context):
     notif = NotifHandler()
     db = DBHandler.get_instance()
-    for record in event['Records']:
-        message = json.loads(record['body'])
-        user_info = [(row[0], row[1]) for row in db.query(USER_PATTERN_MATCH, (
-            'email', message['district_id'], message['age_group'], message['vaccine']))]
-        # logger.info(f'Users to send emails to: {user_info}')
-        message['age_group'] += '+'
-        message['age_group'] = message['age_group'].replace('above_', '')
-        notif.send_template_emails(user_info, message)
-        sqs.delete_message(ReceiptHandle=record['receiptHandle'], QueueUrl=os.getenv('NOTIF_QUEUE_URL'))
+    message = event['message']
+    user_info = [(row[0], row[1]) for row in db.query(USER_PATTERN_MATCH, (
+        'email', message['district_id'], message['age_group'], message['vaccine']))]
+    # logger.info(f'Users to send emails to: {user_info}')
+    message['age_group'] += '+'
+    message['age_group'] = message['age_group'].replace('above_', '')
+    notif.send_template_emails(user_info, message)
     return response_handler({'message': f'All notifs processed'}, 200)
 
 
