@@ -93,6 +93,8 @@ async def send_historical_diff(district_id):
     weeks = NUM_WEEKS
     db_data = db.get_historical_data(district_id, date.today().strftime("%Y-%m-%d"))
     is_district_processed = db.is_district_processed(district_id)
+    client = boto3.client('lambda', region_name='ap-south-1')
+    NOTIF_FUNCTION_NAME = 'cowin-notification-service-dev-notif_dispatcher'
     for week in range(0, weeks):
         itr_date = (date.today() + timedelta(weeks=week)).strftime("%d-%m-%Y")
         response = await cowin.get_centers_7_old(district_id, itr_date)
@@ -119,7 +121,8 @@ async def send_historical_diff(district_id):
                         'slots': session['slots'],
                         'capacity': session['available_capacity']
                     }
-                    sqs.send_message(MessageBody=json.dumps(message), QueueUrl=os.getenv('NOTIF_QUEUE_URL'))
+                    client.invoke(FunctionName=NOTIF_FUNCTION_NAME,
+                                  InvocationType='Event', Payload=json.dumps({'message': message}))
                 db.insert(ADD_DISTRICT_PROCESSED, (district_id, session['center_id'],
                                                    datetime.strptime(session['date'], '%d-%m-%Y').strftime('%Y-%m-%d'),
                                                    session['min_age_limit'], get_vaccine(session['vaccine']),

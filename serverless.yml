@@ -32,7 +32,7 @@ provider:
       DB_PORT: ${self:custom.secrets.DB_PORT}
       DB_USER: ${self:custom.secrets.DB_USER}
       DB_NAME: ${self:custom.secrets.DB_NAME}
-      NOTIF_QUEUE_URL: !Ref NotificationQueue
+#      NOTIF_QUEUE_URL: !Ref NotificationQueue
       SENDER_EMAIL: ${self:custom.secrets.SENDER_EMAIL}
       WEBSITE_URL: ${self:custom.secrets.WEBSITE_URL}
       DUMMY: 'abc'
@@ -109,12 +109,11 @@ functions:
 
   notif_dispatcher:
     handler: handler.notif_dispatcher
-    reservedConcurrency: 50
     timeout: 30
-    events:
-      - sqs:
-          arn: !GetAtt NotificationQueue.Arn
-          batchSize: 5
+#    events:
+#      - sqs:
+#          arn: !GetAtt NotificationQueue.Arn
+#          batchSize: 5
 
   verify_email:
     handler: handler.verify_email
@@ -127,10 +126,10 @@ functions:
   test_email:
     handler: handler.test_email
 
-resources:
-  Resources:
-    NotificationQueue:
-      Type: AWS::SQS::Queue
-      Properties:
-        VisibilityTimeout: 120
-        MessageRetentionPeriod: 120
+#resources:
+#  Resources:
+#    NotificationQueue:
+#      Type: AWS::SQS::Queue
+#      Properties:
+#        VisibilityTimeout: 120
+#        MessageRetentionPeriod: 120
