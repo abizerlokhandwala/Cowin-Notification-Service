@@ -4,7 +4,7 @@ import string
 import time
 import boto3
 import os
-from datetime import datetime, time
+from datetime import datetime, time as datetime_time
 import pytz #for conversion of UTC to IST
 
 logger = logging.getLogger(__name__)
@@ -17,8 +17,8 @@ client = boto3.client('lambda', region_name='ap-south-1',
 TRIGGER_FUNCTION_NAME = 'cowin-notification-service-dev-trigger_district_updates'
 UPDATE_FUNCTION_NAME = 'cowin-notification-service-dev-update_district_slots'
 
-TIME_SLEEP_FROM = time(00,00)
-TIME_TILL_ASLEEP = time(5,30)
+TIME_SLEEP_FROM = datetime_time(00,00)
+TIME_TILL_ASLEEP = datetime_time(5,30)
 
 def random_str(length):
     res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=length))
@@ -32,7 +32,7 @@ def is_time_between(begin_time, end_time, check_time=None):
     # If check time is not given, default to current IST time
     check_time = check_time or datetime.now(IST).time()
     if begin_time < end_time:
-        return check_time >= begin_time and check_time <= end_time
+        return begin_time <= check_time <= end_time
     else: # crosses midnight
         return check_time >= begin_time or check_time <= end_time
 
