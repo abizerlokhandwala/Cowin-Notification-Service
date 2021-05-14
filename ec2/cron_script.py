@@ -4,7 +4,7 @@ import string
 import time
 import boto3
 import os
-from datetime import datetime, time, timedelta
+from datetime import datetime, time
 import pytz #for conversion of UTC to IST
 
 logger = logging.getLogger(__name__)
@@ -46,17 +46,7 @@ if __name__ == "__main__":
                 var['Environment']['Variables']['DUMMY'] = random_str(20)
                 client.update_function_configuration(FunctionName=UPDATE_FUNCTION_NAME,
                                                     Environment=var['Environment'])
-                time.sleep(10)
-            else
-                curr_time = datetime.now(IST).time()
-                # Calculate remaining time in seconds
-                # https://stackoverflow.com/questions/5259882/subtract-two-times-in-python
-                if curr_time > TIME_TILL_ASLEEP #checking if curr_time is before midnight ( in case TIME_SLEEP_FROM changes ) then subtracting from the next date.
-                    time_to_sleep = datetime.combine(date.today()+timedelta(1), TIME_TO_ASLEEP) - datetime.combine(date.today(), curr_time)
-                else    # else subtract from today's date
-                    time_to_sleep = datetime.combine(date.today(), TIME_TILL_ASLEEP) - datetime.combine(date.today(), curr_time)
-                time_to_sleep_seconds = time_to_sleep.total_seconds()   # convert to seconds
-                time.sleep(time_to_sleep_seconds)   # sleep for remaning time
+            time.sleep(10)
         except Exception as e:
             print(e)
             pass
