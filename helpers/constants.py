@@ -1,7 +1,7 @@
 import json
 import os
 
-COWIN_URL = 'https://cdn-api.co-vin.in/api/v2/'
+COWIN_URL = os.getenv('COWIN_URL')
 STATES_URL = f'{COWIN_URL}admin/location/states/'
 DISTRICTS_URL = f'{COWIN_URL}admin/location/districts/'
 CALENDAR_BY_DISTRICT_PUBLIC_URL = f'{COWIN_URL}appointment/sessions/public/calendarByDistrict/'

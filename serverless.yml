@@ -32,6 +32,7 @@ provider:
       DB_PORT: ${self:custom.secrets.DB_PORT}
       DB_USER: ${self:custom.secrets.DB_USER}
       DB_NAME: ${self:custom.secrets.DB_NAME}
+      COWIN_URL: ${self:custom.secrets.COWIN_URL}
 #      NOTIF_QUEUE_URL: !Ref NotificationQueue
       SENDER_EMAIL: ${self:custom.secrets.SENDER_EMAIL}
       WEBSITE_URL: ${self:custom.secrets.WEBSITE_URL}
@@ -105,7 +106,7 @@ functions:
 
   update_district_slots:
     handler: handler.update_district_slots
-    timeout: 30
+    timeout: 10
 
   notif_dispatcher:
     handler: handler.notif_dispatcher
