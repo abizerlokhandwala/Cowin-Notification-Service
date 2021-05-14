@@ -39,13 +39,13 @@ def is_time_between(begin_time, end_time, check_time=None):
 if __name__ == "__main__":
     while True:
         try:
-            if not is_time_between( TIME_SLEEP_FROM , TIME_TILL_ASLEEP ):
+            if not is_time_between(TIME_SLEEP_FROM, TIME_TILL_ASLEEP):
                 response = client.invoke(FunctionName=TRIGGER_FUNCTION_NAME,
                             InvocationType='Event',Payload='')
-                var = client.get_function_configuration(FunctionName=UPDATE_FUNCTION_NAME)
-                var['Environment']['Variables']['DUMMY'] = random_str(20)
-                client.update_function_configuration(FunctionName=UPDATE_FUNCTION_NAME,
-                                                    Environment=var['Environment'])
+#                 var = client.get_function_configuration(FunctionName=UPDATE_FUNCTION_NAME)
+#                 var['Environment']['Variables']['DUMMY'] = random_str(20)
+#                 client.update_function_configuration(FunctionName=UPDATE_FUNCTION_NAME,
+#                                                     Environment=var['Environment'])
             time.sleep(10)
         except Exception as e:
             print(e)
