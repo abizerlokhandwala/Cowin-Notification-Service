@@ -96,7 +96,7 @@ async def send_historical_diff(district_id):
     client = boto3.client('lambda', region_name='ap-south-1')
     NOTIF_FUNCTION_NAME = 'cowin-notification-service-dev-notif_dispatcher'
     for week in range(0, weeks):
-        itr_date = (date.today() + timedelta(weeks=week)).strftime("%d-%m-%Y")
+        itr_date = (date.today() + timedelta(weeks=week))
         response = await cowin.get_centers_7_old(district_id, itr_date)
         for session in response:
             if session['available_capacity'] >= 10:
@@ -129,6 +129,7 @@ async def send_historical_diff(district_id):
                                                    str(datetime.now())))
     if not is_district_processed:
         db.insert(ADD_PROCESSED_DISTRICTS, (district_id,))
+    db.close()
     return
 
 

@@ -106,7 +106,9 @@ functions:
 
   update_district_slots:
     handler: handler.update_district_slots
-    timeout: 10
+    timeout: 25
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
 
   notif_dispatcher:
     handler: handler.notif_dispatcher

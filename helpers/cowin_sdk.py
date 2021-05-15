@@ -59,29 +59,23 @@ class CowinAPI:
         headers = {
             'User-Agent': self.random_str()
         }
-        async with aiohttp.ClientSession() as session:
-            async with session.get(f'{FIND_BY_DISTRICT_URL}?district_id={district_id}&date={date_val}',
-                                   headers=headers) as response:
-                logger.info(f'Status: {response.status}')
-                if response.status >= 400:
-                    response = {
-                        'sessions': []
-                    }
-                else:
-                    response = await response.json()
-        centers = response['sessions']
-        date_tomorrow = (date.today() + timedelta(days=1)).strftime("%d-%m-%Y")
-        headers = {
-            'User-Agent': self.random_str()
-        }
-        async with aiohttp.ClientSession() as session:
-            async with session.get(f'{FIND_BY_DISTRICT_URL}?district_id={district_id}&date={date_tomorrow}',
-                                   headers=headers) as response:
-                if response.status >= 400:
-                    response = {
-                        'sessions': []
-                    }
-                else:
-                    response = await response.json()
-        centers += response['sessions']
+        centers = []
+        check_4xx = False
+        for day in range(0,4):
+            itr_date = (date_val + timedelta(days=day)).strftime("%d-%m-%Y")
+            async with aiohttp.ClientSession() as session:
+                async with session.get(f'{FIND_BY_DISTRICT_URL}?district_id={district_id}&date={itr_date}',
+                                       headers=headers) as response:
+                    if response.status >= 400:
+                        check_4xx = True
+                        response = {
+                            'sessions': []
+                        }
+                    else:
+                        response = await response.json()
+            centers += response['sessions']
+        if not check_4xx:
+            logger.info(f'Status: 200')
+        else:
+            logger.info(f'Status: 403')
         return centers

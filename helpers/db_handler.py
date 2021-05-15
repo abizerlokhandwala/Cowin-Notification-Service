@@ -143,3 +143,7 @@ class DBHandler:
         rows = cursor.fetchall()
         cursor.close()
         return rows
+
+    def close(self):
+        self.connection.close()
+        return
