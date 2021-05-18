@@ -99,7 +99,7 @@ async def send_historical_diff(district_id):
         itr_date = (date.today() + timedelta(weeks=week))
         response = await cowin.get_centers_7_old(district_id, itr_date)
         for session in response:
-            if session['available_capacity'] >= 10:
+            if session['available_capacity'] >= 5:
                 if get_historical_ds(district_id, session['center_id'],
                                      datetime.strptime(session['date'], '%d-%m-%Y').strftime('%Y-%m-%d'),
                                      session['min_age_limit'], get_vaccine(session['vaccine'])) in db_data:

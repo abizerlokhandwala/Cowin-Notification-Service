@@ -1,0 +1,755 @@
+state_id,state_name,district_id,district_name
+1,Andaman and Nicobar Islands,3,Nicobar
+1,Andaman and Nicobar Islands,1,North and Middle Andaman
+1,Andaman and Nicobar Islands,2,South Andaman
+2,Andhra Pradesh,9,Anantapur
+2,Andhra Pradesh,10,Chittoor
+2,Andhra Pradesh,11,East Godavari
+2,Andhra Pradesh,5,Guntur
+2,Andhra Pradesh,4,Krishna
+2,Andhra Pradesh,7,Kurnool
+2,Andhra Pradesh,12,Prakasam
+2,Andhra Pradesh,13,Sri Potti Sriramulu Nellore
+2,Andhra Pradesh,14,Srikakulam
+2,Andhra Pradesh,8,Visakhapatnam
+2,Andhra Pradesh,15,Vizianagaram
+2,Andhra Pradesh,16,West Godavari
+2,Andhra Pradesh,6,"YSR District, Kadapa (Cuddapah)"
+3,Arunachal Pradesh,22,Anjaw
+3,Arunachal Pradesh,20,Changlang
+3,Arunachal Pradesh,25,Dibang Valley
+3,Arunachal Pradesh,23,East Kameng
+3,Arunachal Pradesh,42,East Siang
+3,Arunachal Pradesh,17,Itanagar Capital Complex
+3,Arunachal Pradesh,24,Kamle
+3,Arunachal Pradesh,27,Kra Daadi
+3,Arunachal Pradesh,21,Kurung Kumey
+3,Arunachal Pradesh,33,Lepa Rada
+3,Arunachal Pradesh,29,Lohit
+3,Arunachal Pradesh,40,Longding
+3,Arunachal Pradesh,31,Lower Dibang Valley
+3,Arunachal Pradesh,18,Lower Siang
+3,Arunachal Pradesh,32,Lower Subansiri
+3,Arunachal Pradesh,36,Namsai
+3,Arunachal Pradesh,19,Pakke Kessang
+3,Arunachal Pradesh,39,Papum Pare
+3,Arunachal Pradesh,35,Shi Yomi
+3,Arunachal Pradesh,37,Siang
+3,Arunachal Pradesh,30,Tawang
+3,Arunachal Pradesh,26,Tirap
+3,Arunachal Pradesh,34,Upper Siang
+3,Arunachal Pradesh,41,Upper Subansiri
+3,Arunachal Pradesh,28,West Kameng
+3,Arunachal Pradesh,38,West Siang
+4,Assam,46,Baksa
+4,Assam,47,Barpeta
+4,Assam,765,Biswanath
+4,Assam,57,Bongaigaon
+4,Assam,66,Cachar
+4,Assam,766,Charaideo
+4,Assam,58,Chirang
+4,Assam,48,Darrang
+4,Assam,62,Dhemaji
+4,Assam,59,Dhubri
+4,Assam,43,Dibrugarh
+4,Assam,67,Dima Hasao
+4,Assam,60,Goalpara
+4,Assam,53,Golaghat
+4,Assam,68,Hailakandi
+4,Assam,764,Hojai
+4,Assam,54,Jorhat
+4,Assam,49,Kamrup Metropolitan
+4,Assam,50,Kamrup Rural
+4,Assam,51,Karbi-Anglong
+4,Assam,69,Karimganj
+4,Assam,61,Kokrajhar
+4,Assam,63,Lakhimpur
+4,Assam,767,Majuli
+4,Assam,55,Morigaon
+4,Assam,56,Nagaon
+4,Assam,52,Nalbari
+4,Assam,44,Sivasagar
+4,Assam,64,Sonitpur
+4,Assam,768,South Salmara Mankachar
+4,Assam,45,Tinsukia
+4,Assam,65,Udalguri
+4,Assam,769,West Karbi Anglong
+5,Bihar,74,Araria
+5,Bihar,78,Arwal
+5,Bihar,77,Aurangabad
+5,Bihar,83,Banka
+5,Bihar,98,Begusarai
+5,Bihar,82,Bhagalpur
+5,Bihar,99,Bhojpur
+5,Bihar,100,Buxar
+5,Bihar,94,Darbhanga
+5,Bihar,105,East Champaran
+5,Bihar,79,Gaya
+5,Bihar,104,Gopalganj
+5,Bihar,107,Jamui
+5,Bihar,91,Jehanabad
+5,Bihar,80,Kaimur
+5,Bihar,75,Katihar
+5,Bihar,101,Khagaria
+5,Bihar,76,Kishanganj
+5,Bihar,84,Lakhisarai
+5,Bihar,70,Madhepura
+5,Bihar,95,Madhubani
+5,Bihar,85,Munger
+5,Bihar,86,Muzaffarpur
+5,Bihar,90,Nalanda
+5,Bihar,92,Nawada
+5,Bihar,97,Patna
+5,Bihar,73,Purnia
+5,Bihar,81,Rohtas
+5,Bihar,71,Saharsa
+5,Bihar,96,Samastipur
+5,Bihar,102,Saran
+5,Bihar,93,Sheikhpura
+5,Bihar,87,Sheohar
+5,Bihar,88,Sitamarhi
+5,Bihar,103,Siwan
+5,Bihar,72,Supaul
+5,Bihar,89,Vaishali
+5,Bihar,106,West Champaran
+6,Chandigarh,108,Chandigarh
+7,Chhattisgarh,110,Balod
+7,Chhattisgarh,111,Baloda bazar
+7,Chhattisgarh,112,Balrampur
+7,Chhattisgarh,113,Bastar
+7,Chhattisgarh,114,Bemetara
+7,Chhattisgarh,115,Bijapur
+7,Chhattisgarh,116,Bilaspur
+7,Chhattisgarh,117,Dantewada
+7,Chhattisgarh,118,Dhamtari
+7,Chhattisgarh,119,Durg
+7,Chhattisgarh,120,Gariaband
+7,Chhattisgarh,136,Gaurela Pendra Marwahi 
+7,Chhattisgarh,121,Janjgir-Champa
+7,Chhattisgarh,122,Jashpur
+7,Chhattisgarh,123,Kanker
+7,Chhattisgarh,135,Kawardha
+7,Chhattisgarh,124,Kondagaon
+7,Chhattisgarh,125,Korba
+7,Chhattisgarh,126,Koriya
+7,Chhattisgarh,127,Mahasamund
+7,Chhattisgarh,128,Mungeli
+7,Chhattisgarh,129,Narayanpur
+7,Chhattisgarh,130,Raigarh
+7,Chhattisgarh,109,Raipur
+7,Chhattisgarh,131,Rajnandgaon
+7,Chhattisgarh,132,Sukma
+7,Chhattisgarh,133,Surajpur
+7,Chhattisgarh,134,Surguja
+8,Dadra and Nagar Haveli,137,Dadra and Nagar Haveli
+9,Delhi,141,Central Delhi
+9,Delhi,145,East Delhi
+9,Delhi,140,New Delhi
+9,Delhi,146,North Delhi
+9,Delhi,147,North East Delhi
+9,Delhi,143,North West Delhi
+9,Delhi,148,Shahdara
+9,Delhi,149,South Delhi
+9,Delhi,144,South East Delhi
+9,Delhi,150,South West Delhi
+9,Delhi,142,West Delhi
+10,Goa,151,North Goa
+10,Goa,152,South Goa
+11,Gujarat,154,Ahmedabad
+11,Gujarat,770,Ahmedabad Corporation
+11,Gujarat,174,Amreli
+11,Gujarat,179,Anand
+11,Gujarat,158,Aravalli
+11,Gujarat,159,Banaskantha
+11,Gujarat,180,Bharuch
+11,Gujarat,175,Bhavnagar
+11,Gujarat,771,Bhavnagar Corporation
+11,Gujarat,176,Botad
+11,Gujarat,181,Chhotaudepur
+11,Gujarat,182,Dahod
+11,Gujarat,163,Dang
+11,Gujarat,168,Devbhumi Dwaraka
+11,Gujarat,153,Gandhinagar
+11,Gujarat,772,Gandhinagar Corporation
+11,Gujarat,177,Gir Somnath
+11,Gujarat,169,Jamnagar
+11,Gujarat,773,Jamnagar Corporation
+11,Gujarat,178,Junagadh
+11,Gujarat,774,Junagadh Corporation
+11,Gujarat,156,Kheda
+11,Gujarat,170,Kutch
+11,Gujarat,183,Mahisagar
+11,Gujarat,160,Mehsana
+11,Gujarat,171,Morbi
+11,Gujarat,184,Narmada
+11,Gujarat,164,Navsari
+11,Gujarat,185,Panchmahal
+11,Gujarat,161,Patan
+11,Gujarat,172,Porbandar
+11,Gujarat,173,Rajkot
+11,Gujarat,775,Rajkot Corporation
+11,Gujarat,162,Sabarkantha
+11,Gujarat,165,Surat
+11,Gujarat,776,Surat Corporation
+11,Gujarat,157,Surendranagar
+11,Gujarat,166,Tapi
+11,Gujarat,155,Vadodara
+11,Gujarat,777,Vadodara Corporation
+11,Gujarat,167,Valsad
+12,Haryana,193,Ambala
+12,Haryana,200,Bhiwani
+12,Haryana,201,Charkhi Dadri
+12,Haryana,199,Faridabad
+12,Haryana,196,Fatehabad
+12,Haryana,188,Gurgaon
+12,Haryana,191,Hisar
+12,Haryana,189,Jhajjar
+12,Haryana,204,Jind
+12,Haryana,190,Kaithal
+12,Haryana,203,Karnal
+12,Haryana,186,Kurukshetra
+12,Haryana,206,Mahendragarh
+12,Haryana,205,Nuh
+12,Haryana,207,Palwal
+12,Haryana,187,Panchkula
+12,Haryana,195,Panipat
+12,Haryana,202,Rewari
+12,Haryana,192,Rohtak
+12,Haryana,194,Sirsa
+12,Haryana,198,Sonipat
+12,Haryana,197,Yamunanagar
+13,Himachal Pradesh,219,Bilaspur
+13,Himachal Pradesh,214,Chamba
+13,Himachal Pradesh,217,Hamirpur
+13,Himachal Pradesh,213,Kangra
+13,Himachal Pradesh,216,Kinnaur
+13,Himachal Pradesh,211,Kullu
+13,Himachal Pradesh,210,Lahaul Spiti
+13,Himachal Pradesh,215,Mandi
+13,Himachal Pradesh,208,Shimla
+13,Himachal Pradesh,212,Sirmaur
+13,Himachal Pradesh,209,Solan
+13,Himachal Pradesh,218,Una
+14,Jammu and Kashmir,224,Anantnag
+14,Jammu and Kashmir,223,Bandipore
+14,Jammu and Kashmir,225,Baramulla
+14,Jammu and Kashmir,229,Budgam
+14,Jammu and Kashmir,232,Doda
+14,Jammu and Kashmir,228,Ganderbal
+14,Jammu and Kashmir,230,Jammu
+14,Jammu and Kashmir,234,Kathua
+14,Jammu and Kashmir,231,Kishtwar
+14,Jammu and Kashmir,221,Kulgam
+14,Jammu and Kashmir,226,Kupwara
+14,Jammu and Kashmir,238,Poonch
+14,Jammu and Kashmir,227,Pulwama
+14,Jammu and Kashmir,237,Rajouri
+14,Jammu and Kashmir,235,Ramban
+14,Jammu and Kashmir,239,Reasi
+14,Jammu and Kashmir,236,Samba
+14,Jammu and Kashmir,222,Shopian
+14,Jammu and Kashmir,220,Srinagar
+14,Jammu and Kashmir,233,Udhampur
+15,Jharkhand,242,Bokaro
+15,Jharkhand,245,Chatra
+15,Jharkhand,253,Deoghar
+15,Jharkhand,257,Dhanbad
+15,Jharkhand,258,Dumka
+15,Jharkhand,247,East Singhbhum
+15,Jharkhand,243,Garhwa
+15,Jharkhand,256,Giridih
+15,Jharkhand,262,Godda
+15,Jharkhand,251,Gumla
+15,Jharkhand,255,Hazaribagh
+15,Jharkhand,259,Jamtara
+15,Jharkhand,252,Khunti
+15,Jharkhand,241,Koderma
+15,Jharkhand,244,Latehar
+15,Jharkhand,250,Lohardaga
+15,Jharkhand,261,Pakur
+15,Jharkhand,246,Palamu
+15,Jharkhand,254,Ramgarh
+15,Jharkhand,240,Ranchi
+15,Jharkhand,260,Sahebganj
+15,Jharkhand,248,Seraikela Kharsawan
+15,Jharkhand,249,Simdega
+15,Jharkhand,263,West Singhbhum
+16,Karnataka,270,Bagalkot
+16,Karnataka,276,Bangalore Rural
+16,Karnataka,265,Bangalore Urban
+16,Karnataka,294,BBMP
+16,Karnataka,264,Belgaum
+16,Karnataka,274,Bellary
+16,Karnataka,272,Bidar
+16,Karnataka,271,Chamarajanagar
+16,Karnataka,273,Chikamagalur
+16,Karnataka,291,Chikkaballapur
+16,Karnataka,268,Chitradurga
+16,Karnataka,269,Dakshina Kannada
+16,Karnataka,275,Davanagere
+16,Karnataka,278,Dharwad
+16,Karnataka,280,Gadag
+16,Karnataka,267,Gulbarga
+16,Karnataka,289,Hassan
+16,Karnataka,279,Haveri
+16,Karnataka,283,Kodagu
+16,Karnataka,277,Kolar
+16,Karnataka,282,Koppal
+16,Karnataka,290,Mandya
+16,Karnataka,266,Mysore
+16,Karnataka,284,Raichur
+16,Karnataka,292,Ramanagara
+16,Karnataka,287,Shimoga
+16,Karnataka,288,Tumkur
+16,Karnataka,286,Udupi
+16,Karnataka,281,Uttar Kannada
+16,Karnataka,293,Vijayapura
+16,Karnataka,285,Yadgir
+17,Kerala,301,Alappuzha
+17,Kerala,307,Ernakulam
+17,Kerala,306,Idukki
+17,Kerala,297,Kannur
+17,Kerala,295,Kasaragod
+17,Kerala,298,Kollam
+17,Kerala,304,Kottayam
+17,Kerala,305,Kozhikode
+17,Kerala,302,Malappuram
+17,Kerala,308,Palakkad
+17,Kerala,300,Pathanamthitta
+17,Kerala,296,Thiruvananthapuram
+17,Kerala,303,Thrissur
+17,Kerala,299,Wayanad
+18,Ladakh,309,Kargil
+18,Ladakh,310,Leh
+19,Lakshadweep,796,Agatti Island
+19,Lakshadweep,311,Lakshadweep
+20,Madhya Pradesh,320,Agar
+20,Madhya Pradesh,357,Alirajpur
+20,Madhya Pradesh,334,Anuppur
+20,Madhya Pradesh,354,Ashoknagar
+20,Madhya Pradesh,338,Balaghat
+20,Madhya Pradesh,343,Barwani
+20,Madhya Pradesh,362,Betul
+20,Madhya Pradesh,351,Bhind
+20,Madhya Pradesh,312,Bhopal
+20,Madhya Pradesh,342,Burhanpur
+20,Madhya Pradesh,328,Chhatarpur
+20,Madhya Pradesh,337,Chhindwara
+20,Madhya Pradesh,327,Damoh
+20,Madhya Pradesh,350,Datia
+20,Madhya Pradesh,324,Dewas
+20,Madhya Pradesh,341,Dhar
+20,Madhya Pradesh,336,Dindori
+20,Madhya Pradesh,348,Guna
+20,Madhya Pradesh,313,Gwalior
+20,Madhya Pradesh,361,Harda
+20,Madhya Pradesh,360,Hoshangabad
+20,Madhya Pradesh,314,Indore
+20,Madhya Pradesh,315,Jabalpur
+20,Madhya Pradesh,340,Jhabua
+20,Madhya Pradesh,353,Katni
+20,Madhya Pradesh,339,Khandwa
+20,Madhya Pradesh,344,Khargone
+20,Madhya Pradesh,335,Mandla
+20,Madhya Pradesh,319,Mandsaur
+20,Madhya Pradesh,347,Morena
+20,Madhya Pradesh,352,Narsinghpur
+20,Madhya Pradesh,323,Neemuch
+20,Madhya Pradesh,326,Panna
+20,Madhya Pradesh,359,Raisen
+20,Madhya Pradesh,358,Rajgarh
+20,Madhya Pradesh,322,Ratlam
+20,Madhya Pradesh,316,Rewa
+20,Madhya Pradesh,317,Sagar
+20,Madhya Pradesh,333,Satna
+20,Madhya Pradesh,356,Sehore
+20,Madhya Pradesh,349,Seoni
+20,Madhya Pradesh,332,Shahdol
+20,Madhya Pradesh,321,Shajapur
+20,Madhya Pradesh,346,Sheopur
+20,Madhya Pradesh,345,Shivpuri
+20,Madhya Pradesh,331,Sidhi
+20,Madhya Pradesh,330,Singrauli
+20,Madhya Pradesh,325,Tikamgarh
+20,Madhya Pradesh,318,Ujjain
+20,Madhya Pradesh,329,Umaria
+20,Madhya Pradesh,355,Vidisha
+21,Maharashtra,391,Ahmednagar
+21,Maharashtra,364,Akola
+21,Maharashtra,366,Amravati
+21,Maharashtra,397,Aurangabad 
+21,Maharashtra,384,Beed
+21,Maharashtra,370,Bhandara
+21,Maharashtra,367,Buldhana
+21,Maharashtra,380,Chandrapur
+21,Maharashtra,388,Dhule
+21,Maharashtra,379,Gadchiroli
+21,Maharashtra,378,Gondia
+21,Maharashtra,386,Hingoli
+21,Maharashtra,390,Jalgaon
+21,Maharashtra,396,Jalna
+21,Maharashtra,371,Kolhapur
+21,Maharashtra,383,Latur
+21,Maharashtra,395,Mumbai
+21,Maharashtra,365,Nagpur
+21,Maharashtra,382,Nanded
+21,Maharashtra,387,Nandurbar
+21,Maharashtra,389,Nashik
+21,Maharashtra,381,Osmanabad
+21,Maharashtra,394,Palghar
+21,Maharashtra,385,Parbhani
+21,Maharashtra,363,Pune
+21,Maharashtra,393,Raigad
+21,Maharashtra,372,Ratnagiri
+21,Maharashtra,373,Sangli
+21,Maharashtra,376,Satara
+21,Maharashtra,374,Sindhudurg
+21,Maharashtra,375,Solapur
+21,Maharashtra,392,Thane
+21,Maharashtra,377,Wardha
+21,Maharashtra,369,Washim
+21,Maharashtra,368,Yavatmal
+22,Manipur,398,Bishnupur
+22,Manipur,399,Chandel
+22,Manipur,400,Churachandpur
+22,Manipur,401,Imphal East
+22,Manipur,402,Imphal West
+22,Manipur,410,Jiribam
+22,Manipur,413,Kakching
+22,Manipur,409,Kamjong
+22,Manipur,408,Kangpokpi
+22,Manipur,412,Noney
+22,Manipur,411,Pherzawl
+22,Manipur,403,Senapati
+22,Manipur,404,Tamenglong
+22,Manipur,407,Tengnoupal
+22,Manipur,405,Thoubal
+22,Manipur,406,Ukhrul
+23,Meghalaya,424,East Garo Hills
+23,Meghalaya,418,East Jaintia Hills
+23,Meghalaya,414,East Khasi Hills
+23,Meghalaya,423,North Garo Hills
+23,Meghalaya,417,Ri-Bhoi
+23,Meghalaya,421,South Garo Hills
+23,Meghalaya,422,South West Garo Hills
+23,Meghalaya,415,South West Khasi Hills
+23,Meghalaya,420,West Garo Hills
+23,Meghalaya,416,West Jaintia Hills
+23,Meghalaya,419,West Khasi Hills
+24,Mizoram,425,Aizawl East
+24,Mizoram,426,Aizawl West
+24,Mizoram,429,Champhai
+24,Mizoram,428,Kolasib
+24,Mizoram,432,Lawngtlai
+24,Mizoram,431,Lunglei
+24,Mizoram,427,Mamit
+24,Mizoram,430,Serchhip
+24,Mizoram,433,Siaha
+25,Nagaland,434,Dimapur
+25,Nagaland,444,Kiphire
+25,Nagaland,441,Kohima
+25,Nagaland,438,Longleng
+25,Nagaland,437,Mokokchung
+25,Nagaland,439,Mon
+25,Nagaland,435,Peren
+25,Nagaland,443,Phek
+25,Nagaland,440,Tuensang
+25,Nagaland,436,Wokha
+25,Nagaland,442,Zunheboto
+26,Odisha,445,Angul
+26,Odisha,448,Balangir
+26,Odisha,447,Balasore
+26,Odisha,472,Bargarh
+26,Odisha,454,Bhadrak
+26,Odisha,468,Boudh
+26,Odisha,457,Cuttack
+26,Odisha,473,Deogarh
+26,Odisha,458,Dhenkanal
+26,Odisha,467,Gajapati
+26,Odisha,449,Ganjam
+26,Odisha,459,Jagatsinghpur
+26,Odisha,460,Jajpur
+26,Odisha,474,Jharsuguda
+26,Odisha,464,Kalahandi
+26,Odisha,450,Kandhamal
+26,Odisha,461,Kendrapara
+26,Odisha,455,Kendujhar
+26,Odisha,446,Khurda
+26,Odisha,451,Koraput
+26,Odisha,469,Malkangiri
+26,Odisha,456,Mayurbhanj
+26,Odisha,470,Nabarangpur
+26,Odisha,462,Nayagarh
+26,Odisha,465,Nuapada
+26,Odisha,463,Puri
+26,Odisha,471,Rayagada
+26,Odisha,452,Sambalpur
+26,Odisha,466,Subarnapur
+26,Odisha,453,Sundargarh
+27,Puducherry,476,Karaikal
+27,Puducherry,477,Mahe
+27,Puducherry,475,Puducherry
+27,Puducherry,478,Yanam
+28,Punjab,485,Amritsar
+28,Punjab,483,Barnala
+28,Punjab,493,Bathinda
+28,Punjab,499,Faridkot
+28,Punjab,484,Fatehgarh Sahib
+28,Punjab,487,Fazilka
+28,Punjab,480,Ferozpur
+28,Punjab,489,Gurdaspur
+28,Punjab,481,Hoshiarpur
+28,Punjab,492,Jalandhar
+28,Punjab,479,Kapurthala
+28,Punjab,488,Ludhiana
+28,Punjab,482,Mansa
+28,Punjab,491,Moga
+28,Punjab,486,Pathankot
+28,Punjab,494,Patiala
+28,Punjab,497,Rup Nagar
+28,Punjab,498,Sangrur
+28,Punjab,496,SAS Nagar
+28,Punjab,500,SBS Nagar
+28,Punjab,490,Sri Muktsar Sahib
+28,Punjab,495,Tarn Taran
+29,Rajasthan,507,Ajmer
+29,Rajasthan,512,Alwar
+29,Rajasthan,519,Banswara
+29,Rajasthan,516,Baran
+29,Rajasthan,528,Barmer
+29,Rajasthan,508,Bharatpur
+29,Rajasthan,523,Bhilwara
+29,Rajasthan,501,Bikaner
+29,Rajasthan,514,Bundi
+29,Rajasthan,521,Chittorgarh
+29,Rajasthan,530,Churu
+29,Rajasthan,511,Dausa
+29,Rajasthan,524,Dholpur
+29,Rajasthan,520,Dungarpur
+29,Rajasthan,517,Hanumangarh
+29,Rajasthan,505,Jaipur I
+29,Rajasthan,506,Jaipur II
+29,Rajasthan,527,Jaisalmer
+29,Rajasthan,533,Jalore
+29,Rajasthan,515,Jhalawar
+29,Rajasthan,510,Jhunjhunu
+29,Rajasthan,502,Jodhpur
+29,Rajasthan,525,Karauli
+29,Rajasthan,503,Kota
+29,Rajasthan,532,Nagaur
+29,Rajasthan,529,Pali
+29,Rajasthan,522,Pratapgarh
+29,Rajasthan,518,Rajsamand
+29,Rajasthan,534,Sawai Madhopur
+29,Rajasthan,513,Sikar
+29,Rajasthan,531,Sirohi
+29,Rajasthan,509,Sri Ganganagar
+29,Rajasthan,526,Tonk
+29,Rajasthan,504,Udaipur
+30,Sikkim,535,East Sikkim
+30,Sikkim,537,North Sikkim
+30,Sikkim,538,South Sikkim
+30,Sikkim,536,West Sikkim
+31,Tamil Nadu,779,Aranthangi
+31,Tamil Nadu,555,Ariyalur
+31,Tamil Nadu,578,Attur
+31,Tamil Nadu,565,Chengalpet
+31,Tamil Nadu,571,Chennai
+31,Tamil Nadu,778,Cheyyar
+31,Tamil Nadu,539,Coimbatore
+31,Tamil Nadu,547,Cuddalore
+31,Tamil Nadu,566,Dharmapuri
+31,Tamil Nadu,556,Dindigul
+31,Tamil Nadu,563,Erode
+31,Tamil Nadu,552,Kallakurichi
+31,Tamil Nadu,557,Kanchipuram
+31,Tamil Nadu,544,Kanyakumari
+31,Tamil Nadu,559,Karur
+31,Tamil Nadu,780,Kovilpatti
+31,Tamil Nadu,562,Krishnagiri
+31,Tamil Nadu,540,Madurai
+31,Tamil Nadu,576,Nagapattinam
+31,Tamil Nadu,558,Namakkal
+31,Tamil Nadu,577,Nilgiris
+31,Tamil Nadu,564,Palani
+31,Tamil Nadu,573,Paramakudi
+31,Tamil Nadu,570,Perambalur
+31,Tamil Nadu,575,Poonamallee
+31,Tamil Nadu,546,Pudukkottai
+31,Tamil Nadu,567,Ramanathapuram
+31,Tamil Nadu,781,Ranipet
+31,Tamil Nadu,545,Salem
+31,Tamil Nadu,561,Sivaganga
+31,Tamil Nadu,580,Sivakasi
+31,Tamil Nadu,551,Tenkasi
+31,Tamil Nadu,541,Thanjavur
+31,Tamil Nadu,569,Theni
+31,Tamil Nadu,554,Thoothukudi (Tuticorin)
+31,Tamil Nadu,560,Tiruchirappalli
+31,Tamil Nadu,548,Tirunelveli
+31,Tamil Nadu,550,Tirupattur
+31,Tamil Nadu,568,Tiruppur
+31,Tamil Nadu,572,Tiruvallur
+31,Tamil Nadu,553,Tiruvannamalai
+31,Tamil Nadu,574,Tiruvarur
+31,Tamil Nadu,543,Vellore
+31,Tamil Nadu,542,Viluppuram
+31,Tamil Nadu,549,Virudhunagar
+32,Telangana,582,Adilabad
+32,Telangana,583,Bhadradri Kothagudem
+32,Telangana,581,Hyderabad
+32,Telangana,584,Jagtial
+32,Telangana,585,Jangaon
+32,Telangana,586,Jayashankar Bhupalpally
+32,Telangana,587,Jogulamba Gadwal
+32,Telangana,588,Kamareddy
+32,Telangana,589,Karimnagar
+32,Telangana,590,Khammam
+32,Telangana,591,Kumuram Bheem
+32,Telangana,592,Mahabubabad
+32,Telangana,593,Mahabubnagar
+32,Telangana,594,Mancherial
+32,Telangana,595,Medak
+32,Telangana,596,Medchal
+32,Telangana,612,Mulugu
+32,Telangana,597,Nagarkurnool
+32,Telangana,598,Nalgonda
+32,Telangana,613,Narayanpet
+32,Telangana,599,Nirmal
+32,Telangana,600,Nizamabad
+32,Telangana,601,Peddapalli
+32,Telangana,602,Rajanna Sircilla
+32,Telangana,603,Rangareddy
+32,Telangana,604,Sangareddy
+32,Telangana,605,Siddipet
+32,Telangana,606,Suryapet
+32,Telangana,607,Vikarabad
+32,Telangana,608,Wanaparthy
+32,Telangana,609,Warangal(Rural)
+32,Telangana,610,Warangal(Urban)
+32,Telangana,611,Yadadri Bhuvanagiri
+33,Tripura,614,Dhalai
+33,Tripura,615,Gomati
+33,Tripura,616,Khowai
+33,Tripura,617,North Tripura
+33,Tripura,618,Sepahijala
+33,Tripura,619,South Tripura
+33,Tripura,620,Unakoti
+33,Tripura,621,West Tripura
+34,Uttar Pradesh,622,Agra
+34,Uttar Pradesh,623,Aligarh
+34,Uttar Pradesh,625,Ambedkar Nagar
+34,Uttar Pradesh,626,Amethi
+34,Uttar Pradesh,627,Amroha
+34,Uttar Pradesh,628,Auraiya
+34,Uttar Pradesh,646,Ayodhya
+34,Uttar Pradesh,629,Azamgarh
+34,Uttar Pradesh,630,Badaun
+34,Uttar Pradesh,631,Baghpat
+34,Uttar Pradesh,632,Bahraich
+34,Uttar Pradesh,633,Balarampur
+34,Uttar Pradesh,634,Ballia
+34,Uttar Pradesh,635,Banda
+34,Uttar Pradesh,636,Barabanki
+34,Uttar Pradesh,637,Bareilly
+34,Uttar Pradesh,638,Basti
+34,Uttar Pradesh,687,Bhadohi
+34,Uttar Pradesh,639,Bijnour
+34,Uttar Pradesh,640,Bulandshahr
+34,Uttar Pradesh,641,Chandauli
+34,Uttar Pradesh,642,Chitrakoot
+34,Uttar Pradesh,643,Deoria
+34,Uttar Pradesh,644,Etah
+34,Uttar Pradesh,645,Etawah
+34,Uttar Pradesh,647,Farrukhabad
+34,Uttar Pradesh,648,Fatehpur
+34,Uttar Pradesh,649,Firozabad
+34,Uttar Pradesh,650,Gautam Buddha Nagar
+34,Uttar Pradesh,651,Ghaziabad
+34,Uttar Pradesh,652,Ghazipur
+34,Uttar Pradesh,653,Gonda
+34,Uttar Pradesh,654,Gorakhpur
+34,Uttar Pradesh,655,Hamirpur
+34,Uttar Pradesh,656,Hapur
+34,Uttar Pradesh,657,Hardoi
+34,Uttar Pradesh,658,Hathras
+34,Uttar Pradesh,659,Jalaun
+34,Uttar Pradesh,660,Jaunpur
+34,Uttar Pradesh,661,Jhansi
+34,Uttar Pradesh,662,Kannauj
+34,Uttar Pradesh,663,Kanpur Dehat
+34,Uttar Pradesh,664,Kanpur Nagar
+34,Uttar Pradesh,665,Kasganj
+34,Uttar Pradesh,666,Kaushambi
+34,Uttar Pradesh,667,Kushinagar
+34,Uttar Pradesh,668,Lakhimpur Kheri
+34,Uttar Pradesh,669,Lalitpur
+34,Uttar Pradesh,670,Lucknow
+34,Uttar Pradesh,671,Maharajganj
+34,Uttar Pradesh,672,Mahoba
+34,Uttar Pradesh,673,Mainpuri
+34,Uttar Pradesh,674,Mathura
+34,Uttar Pradesh,675,Mau
+34,Uttar Pradesh,676,Meerut
+34,Uttar Pradesh,677,Mirzapur
+34,Uttar Pradesh,678,Moradabad
+34,Uttar Pradesh,679,Muzaffarnagar
+34,Uttar Pradesh,680,Pilibhit
+34,Uttar Pradesh,682,Pratapgarh
+34,Uttar Pradesh,624,Prayagraj
+34,Uttar Pradesh,681,Raebareli
+34,Uttar Pradesh,683,Rampur
+34,Uttar Pradesh,684,Saharanpur
+34,Uttar Pradesh,685,Sambhal
+34,Uttar Pradesh,686,Sant Kabir Nagar
+34,Uttar Pradesh,688,Shahjahanpur
+34,Uttar Pradesh,689,Shamli
+34,Uttar Pradesh,690,Shravasti
+34,Uttar Pradesh,691,Siddharthnagar
+34,Uttar Pradesh,692,Sitapur
+34,Uttar Pradesh,693,Sonbhadra
+34,Uttar Pradesh,694,Sultanpur
+34,Uttar Pradesh,695,Unnao
+34,Uttar Pradesh,696,Varanasi
+35,Uttarakhand,704,Almora
+35,Uttarakhand,707,Bageshwar
+35,Uttarakhand,699,Chamoli
+35,Uttarakhand,708,Champawat
+35,Uttarakhand,697,Dehradun
+35,Uttarakhand,702,Haridwar
+35,Uttarakhand,709,Nainital
+35,Uttarakhand,698,Pauri Garhwal
+35,Uttarakhand,706,Pithoragarh
+35,Uttarakhand,700,Rudraprayag
+35,Uttarakhand,701,Tehri Garhwal
+35,Uttarakhand,705,Udham Singh Nagar
+35,Uttarakhand,703,Uttarkashi
+36,West Bengal,710,Alipurduar District
+36,West Bengal,711,Bankura
+36,West Bengal,712,Basirhat HD (North 24 Parganas)
+36,West Bengal,713,Birbhum
+36,West Bengal,714,Bishnupur HD (Bankura)
+36,West Bengal,715,Cooch Behar
+36,West Bengal,783,COOCHBEHAR
+36,West Bengal,716,Dakshin Dinajpur
+36,West Bengal,717,Darjeeling
+36,West Bengal,718,Diamond Harbor HD (S 24 Parganas)
+36,West Bengal,719,East Bardhaman
+36,West Bengal,720,Hoogly
+36,West Bengal,721,Howrah
+36,West Bengal,722,Jalpaiguri
+36,West Bengal,723,Jhargram
+36,West Bengal,724,Kalimpong
+36,West Bengal,725,Kolkata
+36,West Bengal,726,Malda
+36,West Bengal,727,Murshidabad
+36,West Bengal,728,Nadia
+36,West Bengal,729,Nandigram HD (East Medinipore)
+36,West Bengal,730,North 24 Parganas
+36,West Bengal,731,Paschim Medinipore
+36,West Bengal,732,Purba Medinipore
+36,West Bengal,733,Purulia
+36,West Bengal,734,Rampurhat HD (Birbhum)
+36,West Bengal,735,South 24 Parganas
+36,West Bengal,736,Uttar Dinajpur
+36,West Bengal,737,West Bardhaman

@@ -50,6 +50,7 @@ def get_district_preferences(event, context):
 
 def subscribe(event, context):
     body = json.loads(event['body'])
+    body['email'] = body['email'].strip()
     db = DBHandler.get_instance()
     notif = NotifHandler()
     is_verified, verification_token = db.subscribe(body)
