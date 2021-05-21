@@ -87,8 +87,9 @@ def get_vaccine(vaccine):
         return vaccine.lower()
 
 
-async def send_historical_diff(district_id, db):
+async def send_historical_diff(district_id):
     cowin = CowinAPI()
+    db = DBHandler.get_instance()
     weeks = NUM_WEEKS
     db_data = db.get_historical_data(district_id, date.today().strftime("%Y-%m-%d"))
     is_district_processed = db.is_district_processed(district_id)
@@ -128,6 +129,7 @@ async def send_historical_diff(district_id, db):
                                                    str(datetime.now())))
     if not is_district_processed:
         db.insert(ADD_PROCESSED_DISTRICTS, (district_id,))
+    db.close()
     return
 
 

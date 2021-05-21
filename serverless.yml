@@ -112,7 +112,7 @@ functions:
 
   notif_dispatcher:
     handler: handler.notif_dispatcher
-    timeout: 30
+    timeout: 60
 #    events:
 #      - sqs:
 #          arn: !GetAtt NotificationQueue.Arn

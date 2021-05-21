@@ -109,10 +109,8 @@ def update_district_slots(event, context):
     # logger.info(f"IP: {requests.get('https://api.ipify.org').text}")
     district_ids = event['districts']
     # district_ids = [363]
-    db = DBHandler.get_instance()
-    get_event_loop().run_until_complete(asyncio.gather(*[send_historical_diff(district_id, db) for district_id in
+    get_event_loop().run_until_complete(asyncio.gather(*[send_historical_diff(district_id) for district_id in
                                                              district_ids]))
-    db.close()
     return response_handler({'message': f'Districts {district_ids} processed'}, 200)
 
 def notif_dispatcher(event, context):
