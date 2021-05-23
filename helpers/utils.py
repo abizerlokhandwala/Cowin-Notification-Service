@@ -91,7 +91,7 @@ async def send_historical_diff(district_id):
     cowin = CowinAPI()
     db = DBHandler.get_instance()
     weeks = NUM_WEEKS
-    db_data = db.get_historical_data(district_id, date.today().strftime("%Y-%m-%d"))
+    db_data = db.get_historical_data(district_id, date.today().strftime("%Y-%m-%d"), (datetime.now() + timedelta(hours=-1)).strftime("%Y-%m-%d %H:%M:%S"))
     is_district_processed = db.is_district_processed(district_id)
     client = boto3.client('lambda', region_name='ap-south-1')
     NOTIF_FUNCTION_NAME = 'cowin-notification-service-dev-notif_dispatcher'
@@ -99,7 +99,7 @@ async def send_historical_diff(district_id):
         itr_date = (date.today() + timedelta(weeks=week))
         response = await cowin.get_centers_7_old(district_id, itr_date)
         for session in response:
-            if session['available_capacity'] >= 5:
+            if session['available_capacity'] >= 5 and session['available_capacity_dose1'] >= 5:
                 if get_historical_ds(district_id, session['center_id'],
                                      datetime.strptime(session['date'], '%d-%m-%Y').strftime('%Y-%m-%d'),
                                      session['min_age_limit'], get_vaccine(session['vaccine'])) in db_data:
@@ -126,7 +126,7 @@ async def send_historical_diff(district_id):
                 db.insert(ADD_DISTRICT_PROCESSED, (district_id, session['center_id'],
                                                    datetime.strptime(session['date'], '%d-%m-%Y').strftime('%Y-%m-%d'),
                                                    session['min_age_limit'], get_vaccine(session['vaccine']),
-                                                   str(datetime.now())))
+                                                   datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
     if not is_district_processed:
         db.insert(ADD_PROCESSED_DISTRICTS, (district_id,))
     db.close()

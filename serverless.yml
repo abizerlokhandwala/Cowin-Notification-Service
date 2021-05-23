@@ -50,6 +50,7 @@ package:
     - venv/**
     - node_modules/**
     - frontend/**
+    - scripts/**
 
 functions:
   get_states:
@@ -113,7 +114,9 @@ functions:
   notif_dispatcher:
     handler: handler.notif_dispatcher
     timeout: 60
-#    events:
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  #    events:
 #      - sqs:
 #          arn: !GetAtt NotificationQueue.Arn
 #          batchSize: 5
