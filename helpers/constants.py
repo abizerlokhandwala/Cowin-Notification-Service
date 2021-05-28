@@ -1,4 +1,3 @@
-import json
 import os
 
 COWIN_URL = os.getenv('COWIN_URL')
@@ -7,6 +6,8 @@ DISTRICTS_URL = f'{COWIN_URL}admin/location/districts/'
 CALENDAR_BY_DISTRICT_PUBLIC_URL = f'{COWIN_URL}appointment/sessions/public/calendarByDistrict/'
 CALENDAR_BY_DISTRICT_URL = f'{COWIN_URL}appointment/sessions/calendarByDistrict/'
 FIND_BY_DISTRICT_URL = f'{COWIN_URL}appointment/sessions/public/findByDistrict'
+GOOGLE_GEOCODE_URL = 'https://maps.googleapis.com/maps/api/geocode/json'
+GMAPS_API_KEY = os.getenv('GCP_API_KEY')
 
 BOTH = 'both'
 COVISHIELD = 'covishield'

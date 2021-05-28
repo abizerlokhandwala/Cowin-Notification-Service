@@ -1,20 +1,17 @@
 import asyncio
 import json
 import logging
-import os
-import random
-import uuid
 from datetime import date
+
 import boto3
-import requests
 
 from helpers.constants import ISSUE_MSG
 from helpers.cowin_sdk import CowinAPI
 from helpers.db_handler import DBHandler
 from helpers.notificationHandler import NotifHandler
 from helpers.queries import USER_PATTERN_MATCH, GET_USER_QUERY, UPDATE_USER_VERIFIED
-from helpers.utils import response_handler, get_preference_slots, sqs, send_historical_diff, calculate_hash_int, \
-    get_event_loop
+from helpers.utils import response_handler, get_preference_slots, send_historical_diff, get_event_loop, \
+    get_pin_code_location
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -97,12 +94,12 @@ def trigger_district_updates(event, context):
             batch.append(district)
             if len(batch) >= 20:
                 client.invoke(FunctionName=UPDATE_FUNCTION_NAME,
-                                     InvocationType='Event', Payload=json.dumps({'districts': batch}))
+                              InvocationType='Event', Payload=json.dumps({'districts': batch}))
                 batch.clear()
     if len(batch) > 0:
         client.invoke(FunctionName=UPDATE_FUNCTION_NAME,
                       InvocationType='Event', Payload=json.dumps({'districts': batch}))
-    return response_handler({},200)
+    return response_handler({}, 200)
 
 
 def update_district_slots(event, context):
@@ -110,15 +107,17 @@ def update_district_slots(event, context):
     district_ids = event['districts']
     # district_ids = [363]
     get_event_loop().run_until_complete(asyncio.gather(*[send_historical_diff(district_id) for district_id in
-                                                             district_ids]))
+                                                         district_ids]))
     return response_handler({'message': f'Districts {district_ids} processed'}, 200)
+
 
 def notif_dispatcher(event, context):
     notif = NotifHandler()
     db = DBHandler.get_instance()
     message = event['message']
+    location = get_pin_code_location(message['pincode'])
     user_info = [(row[0], row[1]) for row in db.query(USER_PATTERN_MATCH, (
-        'email', message['district_id'], message['age_group'], message['vaccine']))]
+        'email', message['age_group'], message['vaccine'], message['district_id'], location))]
     # logger.info(f'Users to send emails to: {user_info}')
     message['age_group'] += '+'
     message['age_group'] = message['age_group'].replace('above_', '')
