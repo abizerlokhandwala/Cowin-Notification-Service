@@ -151,8 +151,7 @@ def get_event_loop():
         return loop
 
 
-def get_pin_code_location(pin_code: str) -> str:
-    db = DBHandler.get_instance()
+def get_pin_code_location(pin_code: str, db: DBHandler) -> str:
     rows = db.query(GET_PINCODE_LOCATION, (pin_code,))
     if len(rows) == 1:
         lat = rows[0][1]

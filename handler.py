@@ -115,13 +115,13 @@ def notif_dispatcher(event, context):
     notif = NotifHandler()
     db = DBHandler.get_instance()
     message = event['message']
-    location = get_pin_code_location(message['pincode'])
+    location = get_pin_code_location(message['pincode'], db)
     user_info = [(row[0], row[1]) for row in db.query(USER_PATTERN_MATCH, (
         'email', message['age_group'], message['vaccine'], message['district_id'], location))]
-    # logger.info(f'Users to send emails to: {user_info}')
     message['age_group'] += '+'
     message['age_group'] = message['age_group'].replace('above_', '')
     notif.send_template_emails(user_info, message)
+    db.close()
     return response_handler({'message': f'All notifs processed'}, 200)
 
 
