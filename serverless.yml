@@ -99,15 +99,13 @@ functions:
 
   trigger_district_updates:
     handler: handler.trigger_district_updates
-    events:
-      - http:
-          path: /trigger
-          method: post
-          cors: true
+    timeout: 20
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
 
   update_district_slots:
     handler: handler.update_district_slots
-    timeout: 25
+    timeout: 20
     maximumRetryAttempts: 0
     maximumEventAge: 60
 
@@ -121,6 +119,12 @@ functions:
 #          arn: !GetAtt NotificationQueue.Arn
 #          batchSize: 5
 
+  send_batch_email:
+    handler: handler.send_batch_email
+    timeout: 60
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+
   verify_email:
     handler: handler.verify_email
     events:
@@ -131,6 +135,9 @@ functions:
 
   test_email:
     handler: handler.test_email
+
+  send_verification_email_manual:
+    handler: handler.send_verification_email_manual
 
 #resources:
 #  Resources:

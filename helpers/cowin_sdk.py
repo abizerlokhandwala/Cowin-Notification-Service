@@ -67,6 +67,7 @@ class CowinAPI:
                 async with session.get(f'{FIND_BY_DISTRICT_URL}?district_id={district_id}&date={itr_date}',
                                        headers=headers) as response:
                     if response.status >= 400:
+                        logger.info(response.status)
                         check_4xx = True
                         response = {
                             'sessions': []

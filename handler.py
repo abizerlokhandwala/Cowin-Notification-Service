@@ -8,7 +8,7 @@ from datetime import date
 import boto3
 import requests
 
-from helpers.constants import ISSUE_MSG
+from helpers.constants import ISSUE_MSG, DB_NAME
 from helpers.cowin_sdk import CowinAPI
 from helpers.db_handler import DBHandler
 from helpers.notificationHandler import NotifHandler
@@ -58,8 +58,9 @@ def subscribe(event, context):
         return response_handler({'message': f'Email Already exists'}, 400)
     additional_comments = ''
     if is_verified is False:
-        notif.send_verification_email(body['email'])
+        notif.send_verification_email(body['email'], True)
         additional_comments = f'Please verify your email ID: {body["email"]}'
+    db.close()
     return response_handler({'message': f'Subscribed successfully! {additional_comments}'}, 201)
 
 
@@ -68,8 +69,11 @@ def unsubscribe(event, context):
     token = event["queryStringParameters"]["token"]
     db = DBHandler.get_instance()
     if db.unsubscribe(user_email, token):
+        logger.info(f'{user_email} unsubscribed')
+        db.close()
         return response_handler({'message': f'Unsubscribed successfully!'}, 200)
     else:
+        db.close()
         return response_handler({'message': ISSUE_MSG}, status=400)
 
 
@@ -79,23 +83,28 @@ def verify_email(event, context):
     db = DBHandler.get_instance()
     user = db.query(GET_USER_QUERY, (user_email,))
     if user and int(user[0][3]) == 1:
+        db.close()
         return response_handler({'message': 'User already verified'}, status=200)
     if user and user[0][2] == token:
         db.insert(UPDATE_USER_VERIFIED, (user_email,))
+        db.close()
         return response_handler({'message': 'Successful Verification'}, status=200)
+    db.close()
     return response_handler({'message': 'Unsuccessful Verification'}, status=403)
 
 
 def trigger_district_updates(event, context):
     db = DBHandler.get_instance()
     districts = db.candidate_districts()
+    db.close()
+    random.shuffle(districts)
     client = boto3.client('lambda', region_name='ap-south-1')
     UPDATE_FUNCTION_NAME = 'cowin-notification-service-dev-update_district_slots'
     batch = []
     for district in districts:
         if district:
             batch.append(district)
-            if len(batch) >= 20:
+            if len(batch) >= 10:
                 client.invoke(FunctionName=UPDATE_FUNCTION_NAME,
                                      InvocationType='Event', Payload=json.dumps({'districts': batch}))
                 batch.clear()
@@ -113,18 +122,39 @@ def update_district_slots(event, context):
                                                              district_ids]))
     return response_handler({'message': f'Districts {district_ids} processed'}, 200)
 
+
 def notif_dispatcher(event, context):
-    notif = NotifHandler()
     db = DBHandler.get_instance()
     message = event['message']
     user_info = [(row[0], row[1]) for row in db.query(USER_PATTERN_MATCH, (
         'email', message['district_id'], message['age_group'], message['vaccine']))]
+    db.close()
     # logger.info(f'Users to send emails to: {user_info}')
     message['age_group'] += '+'
     message['age_group'] = message['age_group'].replace('above_', '')
-    notif.send_template_emails(user_info, message)
-    return response_handler({'message': f'All notifs processed'}, 200)
 
+    client = boto3.client('lambda', region_name='ap-south-1')
+    SEND_EMAIL_FUNCTION_NAME = 'cowin-notification-service-dev-send_batch_email'
+    batch = []
+    for user in user_info:
+        if user:
+            batch.append(user)
+            if len(batch) >= 20:
+                client.invoke(FunctionName=SEND_EMAIL_FUNCTION_NAME,
+                                     InvocationType='Event', Payload=json.dumps({'users': batch, 'message': message}))
+                batch.clear()
+    if len(batch) > 0:
+        client.invoke(FunctionName=SEND_EMAIL_FUNCTION_NAME,
+                      InvocationType='Event', Payload=json.dumps({'users': batch, 'message': message}))
+    return response_handler({},200)
+
+def send_batch_email(event, context):
+    notif = NotifHandler()
+    users = event['users']
+    message = event['message']
+    logger.info(f'Num users: {len(users)}')
+    notif.send_template_emails(users, message)
+    return response_handler({'message': f'All notifs processed'}, 200)
 
 def test_email(event, context):
     notif = NotifHandler()
@@ -139,7 +169,18 @@ def test_email(event, context):
             'vaccine': 'covishield',
             'address': 'abc, pqr, xyz',
             'pincode': '411040',
-            'capacity': '5',
-            'fee_type': 'free'
+            'capacity': '40',
+            'capacity_dose_1': '20',
+            'capacity_dose_2': '20',
+            'fee_amount': '₹200'
         })
     return
+
+def send_verification_email_manual(event, context):
+    db = DBHandler.get_instance()
+    users = db.query(f"SELECT email FROM {DB_NAME}.users where id>=%s and is_verified = 0",(3413,))
+    db.close()
+    notif = NotifHandler()
+    for user in users:
+        notif.send_verification_email(user[0], False)
+    return response_handler({'message': f'Sent'}, 200)
