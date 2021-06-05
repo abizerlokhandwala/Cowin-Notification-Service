@@ -155,7 +155,7 @@ def get_pin_code_location(pin_code: str, db: DBHandler) -> str:
     rows = db.query(GET_PINCODE_LOCATION, (pin_code,))
     if len(rows) == 1:
         lat = rows[0][1]
-        lng = rows[0][1]
+        lng = rows[0][2]
         db.close()
     else:
         r = requests.get(GOOGLE_GEOCODE_URL, {'address': pin_code, 'key': GMAPS_API_KEY})
