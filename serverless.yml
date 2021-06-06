@@ -33,6 +33,7 @@ provider:
       DB_USER: ${self:custom.secrets.DB_USER}
       DB_NAME: ${self:custom.secrets.DB_NAME}
       COWIN_URL: ${self:custom.secrets.COWIN_URL}
+      GCP_API_KEY: ${self:custom.secrets.GCP_API_KEY}
 #      NOTIF_QUEUE_URL: !Ref NotificationQueue
       SENDER_EMAIL: ${self:custom.secrets.SENDER_EMAIL}
       WEBSITE_URL: ${self:custom.secrets.WEBSITE_URL}

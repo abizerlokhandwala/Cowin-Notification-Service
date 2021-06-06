@@ -1,16 +1,17 @@
 import asyncio
 import json
 import logging
-import os
 from datetime import date, timedelta, datetime
 
 import boto3
+import requests
 
 from helpers.constants import BOTH, COVAXIN, COVISHIELD, ABOVE_18, ABOVE_45, ABOVE_18_COWIN, ABOVE_45_COWIN, NUM_WEEKS, \
-    SPUTNIK
+    SPUTNIK, GOOGLE_GEOCODE_URL, GMAPS_API_KEY
 from helpers.cowin_sdk import CowinAPI
 from helpers.db_handler import DBHandler
-from helpers.queries import ADD_DISTRICT_PROCESSED, ADD_PROCESSED_DISTRICTS
+from helpers.queries import ADD_DISTRICT_PROCESSED, ADD_PROCESSED_DISTRICTS, GET_PINCODE_LOCATION, \
+    INSERT_PINCODE_LOCATION
 
 sqs = boto3.client('sqs', region_name='ap-south-1')
 
@@ -153,3 +154,26 @@ def get_event_loop():
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         return loop
+
+
+def get_pin_code_location(pin_code: str) -> str:
+    db = DBHandler.get_instance()
+    rows = db.query(GET_PINCODE_LOCATION, (pin_code,))
+    if len(rows) == 1:
+        lat = rows[0][1]
+        lng = rows[0][2]
+        db.close()
+    else:
+        r = requests.get(GOOGLE_GEOCODE_URL, {'address': pin_code, 'key': GMAPS_API_KEY})
+        r.raise_for_status()
+        data = r.json()
+        if len(data['results']) == 1:
+            coordinates = data['results'][0]['geometry']['location']
+            lat = coordinates['lat']
+            lng = coordinates['lng']
+            db.insert(INSERT_PINCODE_LOCATION, (pin_code, lat, lng))
+            db.close()
+        else:
+            db.close()
+            raise ValueError('Not one address returned by geocode api')
+    return f"POINT({lat} {lng})"
