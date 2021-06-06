@@ -154,26 +154,3 @@ def get_event_loop():
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         return loop
-
-
-def get_pin_code_location(pin_code: str) -> str:
-    db = DBHandler.get_instance()
-    rows = db.query(GET_PINCODE_LOCATION, (pin_code,))
-    if len(rows) == 1:
-        lat = rows[0][1]
-        lng = rows[0][2]
-        db.close()
-    else:
-        r = requests.get(GOOGLE_GEOCODE_URL, {'address': pin_code, 'key': GMAPS_API_KEY})
-        r.raise_for_status()
-        data = r.json()
-        if len(data['results']) == 1:
-            coordinates = data['results'][0]['geometry']['location']
-            lat = coordinates['lat']
-            lng = coordinates['lng']
-            db.insert(INSERT_PINCODE_LOCATION, (pin_code, lat, lng))
-            db.close()
-        else:
-            db.close()
-            raise ValueError('Not one address returned by geocode api')
-    return f"POINT({lat} {lng})"

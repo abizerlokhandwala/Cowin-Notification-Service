@@ -3,10 +3,13 @@ import os
 import uuid
 
 import pymysql
+import requests
 
-from helpers.queries import GET_USER_QUERY, ADD_USER_QUERY, SUBSCRIPTION_EXISTS, ADD_SUBSCRIPTION, \
+from helpers.constants import GOOGLE_GEOCODE_URL, GMAPS_API_KEY
+from helpers.queries import GET_USER_QUERY, ADD_USER_QUERY, DISTRICT_SUBSCRIPTION_EXISTS, DISTRICT_ADD_SUBSCRIPTION, \
     ADD_USER_SUBSCRIPTION, UNSUBSCRIBE_USER_SUBSCRIPTION, GET_CANDIDATE_DISTRICTS, \
-    GET_HISTORICAL_DATA, GET_PROCESSED_DISTRICTS
+    GET_HISTORICAL_DATA, GET_PROCESSED_DISTRICTS, PINCODE_SUBSCRIPTION_EXISTS, PINCODE_ADD_SUBSCRIPTION, \
+    GET_PINCODE_LOCATION, INSERT_PINCODE_LOCATION
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -55,14 +58,29 @@ class DBHandler:
 
         subscription_ids = []
         for subscription in body['subscriptions']:
-            cursor.execute(SUBSCRIPTION_EXISTS, (subscription['district_id'], subscription['age_group'], subscription['vaccine']))
-            row = cursor.fetchall()
-            if not row:
-                cursor.execute(ADD_SUBSCRIPTION,(subscription['district_id'], subscription['age_group'], subscription['vaccine']))
-                subscription_ids.append(self.connection.insert_id())
-                self.connection.commit()
-            else:
-                subscription_ids.append(row[0][0])
+            if subscription['type'] == 'district':
+                cursor.execute(DISTRICT_SUBSCRIPTION_EXISTS, (subscription['district_id'], subscription['age_group'], subscription['vaccine']))
+                row = cursor.fetchall()
+                if not row:
+                    cursor.execute(DISTRICT_ADD_SUBSCRIPTION, (subscription['district_id'], subscription['age_group'], subscription['vaccine']))
+                    subscription_ids.append(self.connection.insert_id())
+                    self.connection.commit()
+                else:
+                    subscription_ids.append(row[0][0])
+            elif subscription['type'] == 'pincode':
+                subscription['pincode_distance'] = 1000*int(subscription['pincode_distance']) # convert km to meters
+                cursor.execute(PINCODE_SUBSCRIPTION_EXISTS,
+                               (subscription['pincode'], subscription['pincode_distance'], subscription['age_group'], subscription['vaccine']))
+                row = cursor.fetchall()
+                if not row:
+                    location = get_pin_code_location(subscription['pincode'])
+                    cursor.execute(PINCODE_ADD_SUBSCRIPTION,
+                                   (subscription['pincode'], subscription['pincode_distance'],
+                                    location, subscription['age_group'], subscription['vaccine']))
+                    subscription_ids.append(self.connection.insert_id())
+                    self.connection.commit()
+                else:
+                    subscription_ids.append(row[0][0])
 
         for sub_id in subscription_ids:
             cursor.execute(ADD_USER_SUBSCRIPTION, (user_id, sub_id, 'email'))
@@ -148,3 +166,25 @@ class DBHandler:
     def close(self):
         self.connection.close()
         return
+
+def get_pin_code_location(pin_code: str) -> str:
+    db = DBHandler.get_instance()
+    rows = db.query(GET_PINCODE_LOCATION, (pin_code,))
+    if len(rows) == 1:
+        lat = rows[0][1]
+        lng = rows[0][2]
+        db.close()
+    else:
+        r = requests.get(GOOGLE_GEOCODE_URL, {'address': pin_code, 'key': GMAPS_API_KEY})
+        r.raise_for_status()
+        data = r.json()
+        if len(data['results']) == 1:
+            coordinates = data['results'][0]['geometry']['location']
+            lat = coordinates['lat']
+            lng = coordinates['lng']
+            db.insert(INSERT_PINCODE_LOCATION, (pin_code, lat, lng))
+            db.close()
+        else:
+            db.close()
+            raise ValueError('Not one address returned by geocode api')
+    return f"POINT({lat} {lng})"

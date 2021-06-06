@@ -1,17 +1,17 @@
 import asyncio
 import json
 import logging
+import random
 from datetime import date
 
 import boto3
 
 from helpers.constants import ISSUE_MSG, DB_NAME
 from helpers.cowin_sdk import CowinAPI
-from helpers.db_handler import DBHandler
+from helpers.db_handler import DBHandler, get_pin_code_location
 from helpers.notificationHandler import NotifHandler
 from helpers.queries import USER_PATTERN_MATCH, GET_USER_QUERY, UPDATE_USER_VERIFIED
-from helpers.utils import response_handler, get_preference_slots, send_historical_diff, get_event_loop, \
-    get_pin_code_location
+from helpers.utils import response_handler, get_preference_slots, send_historical_diff, get_event_loop
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -47,6 +47,7 @@ def get_district_preferences(event, context):
 
 def subscribe(event, context):
     body = json.loads(event['body'])
+    logger.info(f'body: {body}')
     body['email'] = body['email'].strip()
     db = DBHandler.get_instance()
     notif = NotifHandler()
@@ -122,11 +123,14 @@ def update_district_slots(event, context):
 
 def notif_dispatcher(event, context):
     message = event['message']
+    # message = {'vaccine':'covishield','age_group':'above_18','district_id':'363','pincode':'411028'}
     location = get_pin_code_location(message['pincode'])
     db = DBHandler.get_instance()
     user_info = [(row[0], row[1]) for row in db.query(USER_PATTERN_MATCH, (
         'email', message['age_group'], message['vaccine'], message['district_id'], location))]
     db.close()
+    # print(user_info)
+    # return {}
     # logger.info(f'Users to send emails to: {user_info}')
     message['age_group'] += '+'
     message['age_group'] = message['age_group'].replace('above_', '')
