@@ -55,10 +55,11 @@ class SESHandler:
                     'ToAddresses': recipients
                 },
                 Source=sender,
-                Template='vaccinepost',
+                Template='vaccinepostnew',
                 TemplateData=template_data
             )
         except Exception as e:
+            print(e)
             logger.error(e,exc_info=True)
             return False
         return response

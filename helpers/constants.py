@@ -12,6 +12,7 @@ GMAPS_API_KEY = os.getenv('GCP_API_KEY')
 BOTH = 'both'
 COVISHIELD = 'covishield'
 COVAXIN = 'covaxin'
+SPUTNIK = 'sputnik v'
 ABOVE_18 = 'above_18'
 ABOVE_45 = 'above_45'
 ABOVE_18_COWIN = '18'
@@ -71,7 +72,9 @@ TEMPLATE_DATA = f"""{{
     "pincode": "%s",
     "unsub_endpoint": "%s",
     "capacity": "%s",
-    "fee_type": "%s"
+    "capacity_dose_1": "%s",
+    "capacity_dose_2": "%s",
+    "fee_amount": "%s"
 }}"""
 
 UNSUB_ENDPOINT = f"{WEBSITE_URL}/unsubscribe?email=%s&token=%s"
