@@ -1,16 +1,17 @@
 import asyncio
 import json
 import logging
-import os
 from datetime import date, timedelta, datetime
 
 import boto3
+import requests
 
 from helpers.constants import BOTH, COVAXIN, COVISHIELD, ABOVE_18, ABOVE_45, ABOVE_18_COWIN, ABOVE_45_COWIN, NUM_WEEKS, \
-    SPUTNIK
+    SPUTNIK, GOOGLE_GEOCODE_URL, GMAPS_API_KEY
 from helpers.cowin_sdk import CowinAPI
 from helpers.db_handler import DBHandler
-from helpers.queries import ADD_DISTRICT_PROCESSED, ADD_PROCESSED_DISTRICTS
+from helpers.queries import ADD_DISTRICT_PROCESSED, ADD_PROCESSED_DISTRICTS, GET_PINCODE_LOCATION, \
+    INSERT_PINCODE_LOCATION
 
 sqs = boto3.client('sqs', region_name='ap-south-1')
 
