@@ -47,7 +47,6 @@ def get_district_preferences(event, context):
 
 def subscribe(event, context):
     body = json.loads(event['body'])
-    logger.info(f'body: {body}')
     body['email'] = body['email'].strip()
     db = DBHandler.get_instance()
     notif = NotifHandler()
@@ -132,7 +131,8 @@ def notif_dispatcher(event, context):
     location = get_pin_code_location(message['pincode'])
     db = DBHandler.get_instance()
     user_info = [(row[0], row[1]) for row in db.query(USER_PATTERN_MATCH, (
-        'email', message['age_group'], message['vaccine'], message['district_id'], location))]
+        'email', message['age_group'], message['vaccine'], message['dose_1'], message['dose_2'],
+         message['district_id'], location))]
     db.close()
     # print(user_info)
     # return {}
@@ -158,7 +158,6 @@ def send_batch_email(event, context):
     notif = NotifHandler()
     users = event['users']
     message = event['message']
-    logger.info(f'Num users: {len(users)}')
     notif.send_template_emails(users, message)
     return response_handler({'message': f'All notifs processed'}, 200)
 

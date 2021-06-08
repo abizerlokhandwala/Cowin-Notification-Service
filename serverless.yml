@@ -45,6 +45,14 @@ plugins:
   - serverless-python-requirements
   - serverless-secrets-plugin
 
+package:
+  individually: true
+  exclude:
+    - venv/**
+    - node_modules/**
+    - frontend/**
+    - scripts/**
+
 functions:
   get_states:
     handler: handler.get_states
@@ -97,13 +105,6 @@ functions:
     maximumEventAge: 60
 
   update_district_slots:
-    package:
-      individually: true
-      exclude:
-        - venv/**
-        - node_modules/**
-        - frontend/**
-        - scripts/**
     handler: handler.update_district_slots
     timeout: 20
     maximumRetryAttempts: 0

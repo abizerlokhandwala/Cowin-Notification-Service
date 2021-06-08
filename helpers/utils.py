@@ -103,8 +103,16 @@ async def send_historical_diff(district_id, db_data):
         itr_date = (date.today() + timedelta(weeks=week))
         response = await cowin.get_centers_7_old(district_id, itr_date)
         for session in response:
-            if session['available_capacity'] >= 10 and session['available_capacity_dose1'] >= 10:
+            if session['available_capacity'] >= 10:
                 if session['session_id'] in db_data:
+                    continue
+                dose_1 = -1
+                dose_2 = -1
+                if session['available_capacity_dose1'] >= 10:
+                    dose_1 = 1
+                if session['available_capacity_dose2'] >= 10:
+                    dose_2 = 1
+                if dose_1 == -1 and dose_2 == -1:
                     continue
                 if is_district_processed:
                     message = {
@@ -124,7 +132,9 @@ async def send_historical_diff(district_id, db_data):
                         'slots': session['slots'],
                         'capacity': session['available_capacity'],
                         'capacity_dose_1': session['available_capacity_dose1'],
-                        'capacity_dose_2': session['available_capacity_dose2']
+                        'capacity_dose_2': session['available_capacity_dose2'],
+                        'dose_1': dose_1,
+                        'dose_2': dose_2
                     }
                     client.invoke(FunctionName=NOTIF_FUNCTION_NAME,
                                   InvocationType='Event', Payload=json.dumps({'message': message}))

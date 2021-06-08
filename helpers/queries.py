@@ -4,14 +4,14 @@ GET_USER_QUERY = f'SELECT * FROM {DB_NAME}.users where email = %s'
 ADD_USER_QUERY = (f'INSERT INTO {DB_NAME}.users '
                   '(email, email_verification_token, is_verified, phone_number)'
                   'values (%s, %s, %s, %s)')
-DISTRICT_SUBSCRIPTION_EXISTS = f'SELECT id from {DB_NAME}.subscriptions where district_id = %s and age_group = %s and vaccine = %s'
-PINCODE_SUBSCRIPTION_EXISTS = f'SELECT id from {DB_NAME}.subscriptions where pincode = %s and max_distance = %s and age_group = %s and vaccine = %s'
+DISTRICT_SUBSCRIPTION_EXISTS = f'SELECT id from {DB_NAME}.subscriptions where district_id = %s and age_group = %s and vaccine = %s and dose_1 = %s and dose_2 = %s'
+PINCODE_SUBSCRIPTION_EXISTS = f'SELECT id from {DB_NAME}.subscriptions where pincode = %s and max_distance = %s and age_group = %s and vaccine = %s and dose_1 = %s and dose_2 = %s'
 DISTRICT_ADD_SUBSCRIPTION = (f'INSERT IGNORE INTO {DB_NAME}.subscriptions'
-                    '(district_id, age_group, vaccine)'
-                    'values (%s, %s, %s)')
+                    '(district_id, age_group, vaccine, dose_1, dose_2)'
+                    'values (%s, %s, %s, %s, %s)')
 PINCODE_ADD_SUBSCRIPTION = (f'INSERT IGNORE INTO {DB_NAME}.subscriptions'
-                    '(pincode, max_distance, location, age_group, vaccine)'
-                    'values (%s, %s, ST_GeomFromText(%s, 4326), %s, %s)')
+                    '(pincode, max_distance, location, age_group, vaccine, dose_1, dose_2)'
+                    'values (%s, %s, ST_GeomFromText(%s, 4326), %s, %s, %s, %s)')
 ADD_USER_SUBSCRIPTION = (f'INSERT INTO {DB_NAME}.user_subscriptions'
                          '(user_id, subscription_id, type, is_subscribed)'
                          'values (%s, %s, %s, 1)'
@@ -38,7 +38,7 @@ USER_PATTERN_MATCH = (
     f'SELECT distinct email, email_verification_token from {DB_NAME}.users where is_verified = 1 and id in '
     f'(SELECT user_id from {DB_NAME}.user_subscriptions where is_subscribed = 1 and type = %s '
     f'and subscription_id in (SELECT id from {DB_NAME}.subscriptions where '
-    f'age_group in (%s, "both") and vaccine in (%s, "both") and (district_id=%s or ST_Distance_Sphere'
+    f'age_group in (%s, "both") and vaccine in (%s, "both") and (dose_1 = %s or dose_2 = %s) and (district_id=%s or ST_Distance_Sphere'
     f'(location, ST_GeomFromText(%s, 4326)) < max_distance)))')
 
 ADD_USER_TOKEN = f'UPDATE {DB_NAME}.users SET email_verification_token = %s where email = %s'

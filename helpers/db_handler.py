@@ -58,11 +58,18 @@ class DBHandler:
 
         subscription_ids = []
         for subscription in body['subscriptions']:
+            dose_1 = 0
+            dose_2 = 0
+            if subscription['dose'] == 'dose_1':
+                dose_1 = 1
+            elif subscription['dose'] == 'dose_2':
+                dose_2 = 1
+
             if subscription['type'] == 'district':
-                cursor.execute(DISTRICT_SUBSCRIPTION_EXISTS, (subscription['district_id'], subscription['age_group'], subscription['vaccine']))
+                cursor.execute(DISTRICT_SUBSCRIPTION_EXISTS, (subscription['district_id'], subscription['age_group'], subscription['vaccine'], dose_1, dose_2))
                 row = cursor.fetchall()
                 if not row:
-                    cursor.execute(DISTRICT_ADD_SUBSCRIPTION, (subscription['district_id'], subscription['age_group'], subscription['vaccine']))
+                    cursor.execute(DISTRICT_ADD_SUBSCRIPTION, (subscription['district_id'], subscription['age_group'], subscription['vaccine'], dose_1, dose_2))
                     subscription_ids.append(self.connection.insert_id())
                     self.connection.commit()
                 else:
@@ -70,7 +77,7 @@ class DBHandler:
             elif subscription['type'] == 'pincode':
                 subscription['pincode_distance'] = 1000*int(subscription['pincode_distance']) # convert km to meters
                 cursor.execute(PINCODE_SUBSCRIPTION_EXISTS,
-                               (subscription['pincode'], subscription['pincode_distance'], subscription['age_group'], subscription['vaccine']))
+                               (subscription['pincode'], subscription['pincode_distance'], subscription['age_group'], subscription['vaccine'], dose_1, dose_2))
                 row = cursor.fetchall()
                 if not row:
                     location = get_pin_code_location(subscription['pincode'])
@@ -78,7 +85,7 @@ class DBHandler:
                         return -2, None
                     cursor.execute(PINCODE_ADD_SUBSCRIPTION,
                                    (subscription['pincode'], subscription['pincode_distance'],
-                                    location, subscription['age_group'], subscription['vaccine']))
+                                    location, subscription['age_group'], subscription['vaccine'], dose_1, dose_2))
                     subscription_ids.append(self.connection.insert_id())
                     self.connection.commit()
                 else:
