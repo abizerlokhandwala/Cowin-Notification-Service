@@ -91,11 +91,11 @@ def get_vaccine(vaccine):
         return vaccine.lower()
 
 
-async def send_historical_diff(district_id):
+async def send_historical_diff(district_id, db_data):
     cowin = CowinAPI()
     db = DBHandler.get_instance()
     weeks = NUM_WEEKS
-    db_data = db.get_historical_data(district_id, date.today().strftime("%Y-%m-%d"), (datetime.now() + timedelta(hours=-3)).strftime("%Y-%m-%d %H:%M:%S"))
+    # db_data = db.get_historical_data(district_id, date.today().strftime("%Y-%m-%d"), (datetime.now() + timedelta(hours=-3)).strftime("%Y-%m-%d %H:%M:%S"))
     is_district_processed = db.is_district_processed(district_id)
     client = boto3.client('lambda', region_name='ap-south-1')
     NOTIF_FUNCTION_NAME = 'cowin-notification-service-dev-notif_dispatcher'
@@ -104,9 +104,7 @@ async def send_historical_diff(district_id):
         response = await cowin.get_centers_7_old(district_id, itr_date)
         for session in response:
             if session['available_capacity'] >= 10 and session['available_capacity_dose1'] >= 10:
-                if get_historical_ds(district_id, session['center_id'],
-                                     datetime.strptime(session['date'], '%d-%m-%Y').strftime('%Y-%m-%d'),
-                                     session['min_age_limit'], get_vaccine(session['vaccine'])) in db_data:
+                if session['session_id'] in db_data:
                     continue
                 if is_district_processed:
                     message = {
@@ -133,7 +131,7 @@ async def send_historical_diff(district_id):
                 db.insert(ADD_DISTRICT_PROCESSED, (district_id, session['center_id'],
                                                    datetime.strptime(session['date'], '%d-%m-%Y').strftime('%Y-%m-%d'),
                                                    session['min_age_limit'], get_vaccine(session['vaccine']),
-                                                   datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+                                                   session['session_id']))
     if not is_district_processed:
         db.insert(ADD_PROCESSED_DISTRICTS, (district_id,))
     db.close()
