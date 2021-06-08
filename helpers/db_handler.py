@@ -74,6 +74,8 @@ class DBHandler:
                 row = cursor.fetchall()
                 if not row:
                     location = get_pin_code_location(subscription['pincode'])
+                    if location == "POINT (-1 -1)":
+                        return -2, None
                     cursor.execute(PINCODE_ADD_SUBSCRIPTION,
                                    (subscription['pincode'], subscription['pincode_distance'],
                                     location, subscription['age_group'], subscription['vaccine']))
@@ -124,13 +126,14 @@ class DBHandler:
             logger.error(e, exc_info=True)
         return
 
-    def get_historical_data(self, district_id, date_from, time_added_from):
+    def get_historical_data(self, date_from):
         try:
             cursor = self.connection.cursor()
             # cursor.execute(GET_HISTORICAL_DATA,(district_id, date_from, district_id, date_from, time_added_from))
-            cursor.execute(GET_HISTORICAL_DATA, (district_id, date_from))
+            cursor.execute(GET_HISTORICAL_DATA, (date_from,))
             rows = cursor.fetchall()
             cursor.close()
+            rows = set([row[0] for row in rows])
             return rows
         except Exception as e:
             logger.error(e, exc_info=True)
@@ -178,13 +181,15 @@ def get_pin_code_location(pin_code: str) -> str:
         r = requests.get(GOOGLE_GEOCODE_URL, {'address': pin_code, 'key': GMAPS_API_KEY})
         r.raise_for_status()
         data = r.json()
-        if len(data['results']) == 1:
+        if len(data['results']) > 0:
             coordinates = data['results'][0]['geometry']['location']
             lat = coordinates['lat']
             lng = coordinates['lng']
             db.insert(INSERT_PINCODE_LOCATION, (pin_code, lat, lng))
             db.close()
         else:
+            logger.info(f'Pincode: {pin_code}')
             db.close()
-            raise ValueError('Not one address returned by geocode api')
+            return "POINT (-1 -1)"
+            # raise ValueError('No address returned by geocode api')
     return f"POINT({lat} {lng})"

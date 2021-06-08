@@ -54,6 +54,8 @@ def subscribe(event, context):
     is_verified, verification_token = db.subscribe(body)
     if is_verified == -1:
         return response_handler({'message': f'Email Already exists'}, 400)
+    elif is_verified == -2: # pincode not found
+        return response_handler({'message': f'Pincode is invalid'}, 400)
     additional_comments = ''
     if is_verified is False:
         notif.send_verification_email(body['email'], True)
@@ -116,7 +118,10 @@ def update_district_slots(event, context):
     # logger.info(f"IP: {requests.get('https://api.ipify.org').text}")
     district_ids = event['districts']
     # district_ids = [363]
-    get_event_loop().run_until_complete(asyncio.gather(*[send_historical_diff(district_id) for district_id in
+    db = DBHandler.get_instance()
+    db_data = db.get_historical_data(date.today().strftime("%Y-%m-%d"))
+    db.close()
+    get_event_loop().run_until_complete(asyncio.gather(*[send_historical_diff(district_id, db_data) for district_id in
                                                          district_ids]))
     return response_handler({'message': f'Districts {district_ids} processed'}, 200)
 

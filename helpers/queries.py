@@ -26,14 +26,14 @@ GET_CANDIDATE_DISTRICTS = (f'SELECT distinct district_id from {DB_NAME}.subscrip
                            f'where id in (SELECT subscription_id from {DB_NAME}.user_subscriptions where '
                            f'is_subscribed = 1 and user_id in (SELECT id from {DB_NAME}.users where is_verified = 1))')
 ADD_DISTRICT_PROCESSED = (f'INSERT INTO {DB_NAME}.historical_slot_data '
-                          f'(district_id, center_id, date, age_group, vaccine, time_added) '
+                          f'(district_id, center_id, date, age_group, vaccine, session_id) '
                           f'values (%s, %s, %s, %s, %s, %s)')
 # GET_HISTORICAL_DATA = (f'SELECT district_id, center_id, date, age_group, LOWER(vaccine) from {DB_NAME}.historical_slot_data '
 #                        f'where district_id = %s and date > %s'
 #                        f'UNION SELECT district_id, center_id, date, age_group, LOWER(vaccine) from {DB_NAME}.historical_slot_data '
 #                        f'where district_id = %s and date = %s and time_added >= %s')
-GET_HISTORICAL_DATA = (f'SELECT district_id, center_id, date, age_group, LOWER(vaccine) from {DB_NAME}.historical_slot_data '
-                       f'where district_id = %s and date >= %s')
+GET_HISTORICAL_DATA = (f'SELECT session_id from {DB_NAME}.historical_slot_data '
+                       f'where date >= %s')
 USER_PATTERN_MATCH = (
     f'SELECT distinct email, email_verification_token from {DB_NAME}.users where is_verified = 1 and id in '
     f'(SELECT user_id from {DB_NAME}.user_subscriptions where is_subscribed = 1 and type = %s '
