@@ -91,11 +91,11 @@ def get_vaccine(vaccine):
         return vaccine.lower()
 
 
-async def send_historical_diff(district_id, db_data):
+async def send_historical_diff(district_id):
     cowin = CowinAPI()
     db = DBHandler.get_instance()
     weeks = NUM_WEEKS
-    # db_data = db.get_historical_data(district_id, date.today().strftime("%Y-%m-%d"), (datetime.now() + timedelta(hours=-3)).strftime("%Y-%m-%d %H:%M:%S"))
+    db_data = db.get_historical_data(district_id, date.today().strftime("%Y-%m-%d"))
     is_district_processed = db.is_district_processed(district_id)
     client = boto3.client('lambda', region_name='ap-south-1')
     NOTIF_FUNCTION_NAME = 'cowin-notification-service-dev-notif_dispatcher'
@@ -104,7 +104,8 @@ async def send_historical_diff(district_id, db_data):
         response = await cowin.get_centers_7_old(district_id, itr_date)
         for session in response:
             if session['available_capacity'] >= 10:
-                if session['session_id'] in db_data:
+                if session['session_id'] in db_data or \
+                        datetime.strptime(session['date'], '%d-%m-%Y').strftime('%Y-%m-%d') < itr_date.strftime('%Y-%m-%d'):
                     continue
                 dose_1 = -1
                 dose_2 = -1

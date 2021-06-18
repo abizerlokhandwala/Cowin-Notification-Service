@@ -10,7 +10,7 @@ from helpers.constants import ISSUE_MSG, DB_NAME
 from helpers.cowin_sdk import CowinAPI
 from helpers.db_handler import DBHandler, get_pin_code_location
 from helpers.notificationHandler import NotifHandler
-from helpers.queries import USER_PATTERN_MATCH, GET_USER_QUERY, UPDATE_USER_VERIFIED
+from helpers.queries import USER_PATTERN_MATCH, GET_USER_QUERY, UPDATE_USER_VERIFIED, SUBSCRIBED_DISTRICT_USERS
 from helpers.utils import response_handler, get_preference_slots, send_historical_diff, get_event_loop
 
 logger = logging.getLogger(__name__)
@@ -117,10 +117,7 @@ def update_district_slots(event, context):
     # logger.info(f"IP: {requests.get('https://api.ipify.org').text}")
     district_ids = event['districts']
     # district_ids = [363]
-    db = DBHandler.get_instance()
-    db_data = db.get_historical_data(date.today().strftime("%Y-%m-%d"))
-    db.close()
-    get_event_loop().run_until_complete(asyncio.gather(*[send_historical_diff(district_id, db_data) for district_id in
+    get_event_loop().run_until_complete(asyncio.gather(*[send_historical_diff(district_id) for district_id in
                                                          district_ids]))
     return response_handler({'message': f'Districts {district_ids} processed'}, 200)
 
@@ -181,11 +178,32 @@ def test_email(event, context):
         })
     return
 
+def notify_pincode_email(event, context):
+    db = DBHandler.get_instance()
+    user_info = [(row[0], row[1]) for row in db.query(SUBSCRIBED_DISTRICT_USERS, (
+        'email'))]
+    db.close()
+    notif = NotifHandler()
+    notif.send_pincode_one_time_email(user_info)
+    return
+
+def test_email_pincode(event, context):
+    notif = NotifHandler()
+    notif.send_pincode_one_time_email(
+        [('abizerL123@gmail.com', 'abc'), ('sharangpai123@gmail.com', 'abc'), ('pujan.iceman@gmail.com', 'abc'),
+         ('shloksingh10@gmail.com', 'abc'), ('arsenal.arpit11@gmail.com', 'abc')])
+    return
+
 def send_verification_email_manual(event, context):
     db = DBHandler.get_instance()
-    users = db.query(f"SELECT email FROM {DB_NAME}.users where id>=%s and is_verified = 0",(3413,))
+    users = db.query(f"SELECT email FROM {DB_NAME}.users where id>=%s and is_verified = 0",(4923,))
     db.close()
     notif = NotifHandler()
     for user in users:
         notif.send_verification_email(user[0], False)
     return response_handler({'message': f'Sent'}, 200)
+
+def poller_service_endpoint(event, context):
+    body = event['body']
+    logger.info(body)
+    return response_handler({'message': 'success'},200)

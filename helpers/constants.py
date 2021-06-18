@@ -77,4 +77,9 @@ TEMPLATE_DATA = f"""{{
     "fee_amount": "%s"
 }}"""
 
+TEMPLATE_DATA_PINCODE = f"""{{
+    "email": "%s",
+    "unsub_endpoint": "%s"
+}}"""
+
 UNSUB_ENDPOINT = f"{WEBSITE_URL}/unsubscribe?email=%s&token=%s"

@@ -1,9 +1,10 @@
 import logging
 import os
+import time
 import uuid
 
 from helpers.constants import EMAIL_SUBJECT, EMAIL_BODY, VERIFY_EMAIL_BODY, VERIFY_SUBJECT, UNSUB_ENDPOINT, \
-    TEMPLATE_DATA
+    TEMPLATE_DATA, TEMPLATE_DATA_PINCODE
 from helpers.db_handler import DBHandler
 from helpers.queries import ADD_USER_TOKEN, GET_USER_QUERY
 from helpers.ses_handler import SESHandler
@@ -36,6 +37,16 @@ class NotifHandler:
                                             message['pincode'], unsub_edpoint, message['capacity'], message['capacity_dose_1'],
                                             message['capacity_dose_2'], message['fee_amount'])
             ses.send_template_email(os.getenv('SENDER_EMAIL'),[info[0]],template_data)
+        return
+
+
+    def send_pincode_one_time_email(self, user_info):
+        ses = SESHandler.get_instance()
+        for info in user_info:
+            unsub_edpoint = UNSUB_ENDPOINT % (info[0], info[1])
+            template_data = TEMPLATE_DATA_PINCODE % (info[0].split('@')[0], unsub_edpoint)
+            ses.send_template_email_pincode(os.getenv('SENDER_EMAIL'),[info[0]],template_data)
+            time.sleep(0.1)
         return
 
     def send_verification_email(self, user_email, create_new_bool):

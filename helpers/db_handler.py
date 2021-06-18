@@ -1,3 +1,4 @@
+import datetime
 import logging
 import os
 import uuid
@@ -92,7 +93,7 @@ class DBHandler:
                     subscription_ids.append(row[0][0])
 
         for sub_id in subscription_ids:
-            cursor.execute(ADD_USER_SUBSCRIPTION, (user_id, sub_id, 'email'))
+            cursor.execute(ADD_USER_SUBSCRIPTION, (user_id, sub_id, 'email', datetime.date.today().strftime('%Y-%m-%d')))
 
         self.connection.commit()
         cursor.close()
@@ -133,11 +134,11 @@ class DBHandler:
             logger.error(e, exc_info=True)
         return
 
-    def get_historical_data(self, date_from):
+    def get_historical_data(self, district_id, date_from):
         try:
             cursor = self.connection.cursor()
             # cursor.execute(GET_HISTORICAL_DATA,(district_id, date_from, district_id, date_from, time_added_from))
-            cursor.execute(GET_HISTORICAL_DATA, (date_from,))
+            cursor.execute(GET_HISTORICAL_DATA, (district_id, date_from,))
             rows = cursor.fetchall()
             cursor.close()
             rows = set([row[0] for row in rows])

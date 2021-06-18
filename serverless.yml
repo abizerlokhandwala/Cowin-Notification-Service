@@ -106,7 +106,7 @@ functions:
 
   update_district_slots:
     handler: handler.update_district_slots
-    timeout: 20
+    timeout: 10
     maximumRetryAttempts: 0
     maximumEventAge: 60
 
@@ -122,7 +122,7 @@ functions:
 
   send_batch_email:
     handler: handler.send_batch_email
-    timeout: 60
+    timeout: 20
     maximumRetryAttempts: 0
     maximumEventAge: 60
 
@@ -137,8 +137,22 @@ functions:
   test_email:
     handler: handler.test_email
 
+  test_email_pincode:
+    handler: handler.test_email_pincode
+
+  notify_pincode_email:
+    handler: handler.notify_pincode_email
+
   send_verification_email_manual:
     handler: handler.send_verification_email_manual
+
+  poller_service_endpoint:
+    handler: handler.poller_service_endpoint
+    events:
+      - http:
+          path: /cowin_notification
+          method: post
+          cors: true
 
 #resources:
 #  Resources:

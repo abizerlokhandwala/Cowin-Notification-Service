@@ -56,7 +56,24 @@ class SESHandler:
                 },
                 Source=sender,
                 Template='vaccinepostnew',
-                TemplateData=template_data
+                TemplateData=template_data,
+                ConfigurationSetName='rendering_error'
+            )
+        except Exception as e:
+            logger.error(e,exc_info=True)
+            return False
+        return response
+
+    def send_template_email_pincode(self, sender, recipients, template_data):
+        try:
+            response = self.client.send_templated_email(
+                Destination={
+                    'ToAddresses': recipients
+                },
+                Source=sender,
+                Template='vaccinepostnotification',
+                TemplateData=template_data,
+                ConfigurationSetName='rendering_error'
             )
         except Exception as e:
             print(e)
