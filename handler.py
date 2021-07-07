@@ -29,7 +29,6 @@ def get_districts(event, context):
     districts = cowin.get_districts(state_id)
     return response_handler(districts, 200)
 
-
 def get_centers(event, context):
     cowin = CowinAPI()
     district_id = event["queryStringParameters"]["district_id"]
@@ -91,16 +90,28 @@ def verify_email(event, context):
     db.close()
     return response_handler({'message': 'Unsuccessful Verification'}, status=403)
 
+def check_district_nums(event, context):
+    cowin = CowinAPI()
+    districts = cowin.get_all_districts()
+    for ind in range(0,1+max(districts)):
+        if ind not in districts:
+            print(f'Missing {ind}')
+    return districts
+
+district_nums = []
 
 def trigger_district_updates(event, context):
-    db = DBHandler.get_instance()
-    districts = db.candidate_districts()
-    db.close()
-    random.shuffle(districts)
+    global district_nums
+    # db = DBHandler.get_instance()
+    # districts = db.candidate_districts()
+    # db.close()
+    if not district_nums:
+        cowin = CowinAPI()
+        district_nums = cowin.get_all_districts()
     client = boto3.client('lambda', region_name='ap-south-1')
     UPDATE_FUNCTION_NAME = 'cowin-notification-service-dev-update_district_slots'
     batch = []
-    for district in districts:
+    for district in district_nums:
         if district:
             batch.append(district)
             if len(batch) >= 10:

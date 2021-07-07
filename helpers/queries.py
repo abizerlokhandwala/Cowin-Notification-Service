@@ -21,9 +21,7 @@ GET_PROCESSED_DISTRICTS = (f'SELECT district_id from {DB_NAME}.processed_distric
                            f'where district_id = %s')
 ADD_PROCESSED_DISTRICTS = (f'INSERT IGNORE INTO {DB_NAME}.processed_districts '
                            f'values(%s)')
-GET_CANDIDATE_DISTRICTS = (f'SELECT distinct district_id from {DB_NAME}.subscriptions '
-                           f'where id in (SELECT subscription_id from {DB_NAME}.user_subscriptions where '
-                           f'is_subscribed = 1 and user_id in (SELECT id from {DB_NAME}.users where is_verified = 1))')
+GET_CANDIDATE_DISTRICTS = f'SELECT distinct district_id from {DB_NAME}.subscriptions'
 ADD_DISTRICT_PROCESSED = (f'INSERT INTO {DB_NAME}.historical_slot_data '
                           f'(district_id, center_id, date, age_group, vaccine, session_id) '
                           f'values (%s, %s, %s, %s, %s, %s)')

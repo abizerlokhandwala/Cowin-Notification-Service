@@ -39,6 +39,13 @@ class CowinAPI:
         response = response.json()
         return response['districts']
 
+    def get_all_districts(self):
+        districts = []
+        states = self.get_states()
+        for state in states:
+            districts+=(self.get_districts(state['state_id']))
+        return [district['district_id'] for district in districts]
+
     def get_centers_7(self, district_id, date_val):
         headers = {
             'User-Agent': self.random_str()

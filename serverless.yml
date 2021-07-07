@@ -68,6 +68,9 @@ functions:
           path: /districts
           method: get
 
+  check_district_nums:
+    handler: handler.check_district_nums
+
   get_centers:
     handler: handler.get_centers
     events:
@@ -100,7 +103,7 @@ functions:
 
   trigger_district_updates:
     handler: handler.trigger_district_updates
-    timeout: 20
+    timeout: 30
     maximumRetryAttempts: 0
     maximumEventAge: 60
 
